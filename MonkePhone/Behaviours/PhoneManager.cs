@@ -109,8 +109,6 @@ namespace MonkePhone.Behaviours
             }
         }
 
-        /*
-#if DEBUG
 
         public void OnGUI()
         {
@@ -129,8 +127,6 @@ namespace MonkePhone.Behaviours
             }
         }
 
-#endif
-        */
 
         public async Task Initialize()
         {
@@ -173,8 +169,7 @@ namespace MonkePhone.Behaviours
                         case "GalleryApp":
                             CreateApp<GalleryApp>(t.gameObject);
                             break;
-
-                        /*
+                            
                         case "MusicApp":
                             CreateApp<MusicApp>(t.gameObject);
                             break;
@@ -187,15 +182,15 @@ namespace MonkePhone.Behaviours
                             CreateApp<MessagingApp>(t.gameObject);
                             break;
 
-                        case "Top Bar":
-                            t.AddComponent<PhoneTopBar>();
-                            break;
-                        */
+                        /* case "Top Bar":
+                             t.AddComponent<PhoneTopBar>();
+                           break; */
+
 
                         default:
                             if (t.TryGetComponent(out PhoneHandDependentObject component))
                             {
-                                Phone.HandDependentObjects.Add(component);
+                                Phone._HandDependentObjects.Add(component);
                             }
                             break;
                     }
@@ -211,7 +206,7 @@ namespace MonkePhone.Behaviours
                 return;
             }
 
-            UnityWebRequest versionWebRequest = UnityWebRequest.Get("https://raw.githubusercontent.com/developer9998/MonkePhone/main/FreeCloudStorageGalore.json");
+            UnityWebRequest versionWebRequest = UnityWebRequest.Get("https://raw.githubusercontent.com/E14O/MonkePhone/refs/heads/main/FreeCloudStorageGalore.json");
             await YieldUtils.Yield(versionWebRequest);
 
             if (versionWebRequest.result == UnityWebRequest.Result.Success)
@@ -236,7 +231,7 @@ namespace MonkePhone.Behaviours
 
                 IsOutdated = true;
                 _outdatedMenuObject.SetActive(true);
-                _outdatedMenuObject.transform.Find("DiscordURL").GetComponent<Text>().text = "discord.gg/dev9998";
+                _outdatedMenuObject.transform.Find("DiscordURL").GetComponent<Text>().text = "discord.gg/MFA5qn385z";
                 _homeMenuObject.SetActive(false);
                 return;
                 //idk what this does

@@ -24,7 +24,7 @@ namespace MonkePhone.Behaviours
 
         public bool InHand, InLeftHand;
 
-        public List<PhoneHandDependentObject> HandDependentObjects;
+        public List<PhoneHandDependentObject> _HandDependentObjects;
 
         private bool _isSwapped, _wasSwappedLeft;
 
@@ -36,7 +36,7 @@ namespace MonkePhone.Behaviours
 
         public void Awake()
         {
-            HandDependentObjects = [];
+            _HandDependentObjects = [];
 
             transform.localScale = new Vector3(0.05f, 0.048f, 0.05f);
 
@@ -49,19 +49,8 @@ namespace MonkePhone.Behaviours
 
             if (Configuration.InitialPosition.Value == Configuration.EInitialPhoneLocation.Table)
             {
-                Vector3 position = new(-65.7592f, 12f, -80.0929f);
-                transform.eulerAngles = new Vector3(0f, 287.8041f, 270f);
-
-                LayerMask layerMask = LayerMask.GetMask(LayerMask.LayerToName(UnityLayer.Default.ToLayerIndex()), LayerMask.LayerToName(UnityLayer.GorillaObject.ToLayerIndex()));
-                if (Physics.Raycast(new Ray(position, Vector3.down), out RaycastHit hit, 1f, layerMask, QueryTriggerInteraction.UseGlobal))
-                {
-                    transform.position = hit.point;
-                }
-                else
-                {
-                    transform.position = position;
-                }
-
+                transform.position = new Vector3(-65.7992f, 11.6965f, -80.14f);
+                transform.eulerAngles = new Vector3(0f, 287.8041f, 270f); 
                 return;
             }
 
@@ -223,7 +212,7 @@ namespace MonkePhone.Behaviours
 
             UpdateProperties();
 
-            foreach (var component in HandDependentObjects)
+            foreach (var component in _HandDependentObjects)
             {
                 component.SetFlip(!InLeftHand);
             }
