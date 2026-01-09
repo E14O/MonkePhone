@@ -178,9 +178,7 @@ namespace MonkePhone.Behaviours
                         case "Lock Screen Unused":
                             _LockScreenObject = t.gameObject;
                             _LockScreenObject.SetActive(true);
-                            _TimeText = t.Find("time").GetComponent<Text>();
-                            _DateText = t.Find("day").GetComponent<Text>();
-                            InvokeRepeating(nameof(ScreenValues), 0f, 1f); // reduces lag as its not being executed multiple times per second.
+                            _LockScreenObject.AddComponent<PhoneLockScreen>();
                             break;
 
                         case "WrongVersionScreen":
@@ -214,7 +212,7 @@ namespace MonkePhone.Behaviours
                         case "Top Bar Unused":
                             _TopBarObject = t.gameObject;
                             _TopBarObject.SetActive(true);
-                            _TimeTextTB = t.Find("Time Text").GetComponent<Text>(); // This uses the same update system as lock screen ScreenValues()
+                            _TopBarObject.AddComponent<PhoneTopBar>();
                             break; 
 
                         default:
@@ -307,18 +305,6 @@ namespace MonkePhone.Behaviours
                 Logging.Error($"Error when setting custom properties: {ex}");
                 return;
             }
-        }
-
-        public void ScreenValues()
-        {
-            DateTime dt = DateTime.Now;
-
-            // LockScreen: Values
-            _TimeText.text = dt.ToString("hh:mm tt");
-            _DateText.text = dt.ToString("dddd, dd MMMM");
-
-            // TopBar: Values
-            _TimeTextTB.text = dt.ToString("hh:mm tt");
         }
 
         public void LateUpdate()

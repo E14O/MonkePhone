@@ -7,16 +7,15 @@ using MonkePhone.Behaviours.UI;
 
 namespace MonkePhone.Behaviours
 {
-    public class LockScreen : MonoBehaviour
+    public class PhoneLockScreen : MonoBehaviour
     {
-        private const string V = "Gallery";
         private GameObject _ActionButton;
         private Text _timeText, _dayText;
         private DateTime Now => DateTime.Now;
         private string Current => Now.ToString("hh:mm tt");
         private string CurrentDay => Now.ToString("dddd, dd MMMM");
 
-        public string ABFunction = "";
+        public string ABFunction = "Camera";
 
         public void Awake()
         {
@@ -36,9 +35,10 @@ namespace MonkePhone.Behaviours
             switch (ABFunction)
             {
                 case "Camera":
+                    PhoneManager.Instance.OpenApp("MonkeGram");
                     break;
 
-                case V:
+                case "Gallery":
                     break;
 
                 case "Settings":
