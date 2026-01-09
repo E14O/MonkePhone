@@ -125,8 +125,14 @@ namespace MonkePhone.Behaviours
                 TogglePower();
             }
 
+            bool open = GUI.Button(new Rect(128f, 250f, 150f, 35f), "GorillaGram");
+            if (!open)
+                OpenApp("GorillaGram");
+            else
+                CloseApp("GorillaGram");
 
-            bool flag = GUI.Button(new Rect(128f, 130f, 150f, 35f), "Post Sample");
+
+                bool flag = GUI.Button(new Rect(128f, 130f, 150f, 35f), "Post Sample");
             if (flag)
             {
                 string _Folder = PhotosPath; 
@@ -173,6 +179,7 @@ namespace MonkePhone.Behaviours
                             _homeMenuObject = t.gameObject;
                             _genericWallpaper = t.Find("GenericBackground").GetComponent<RawImage>();
                             _customWallpaper = t.Find("PictureBackground").GetComponent<RawImage>();
+                            _homeMenuObject.SetActive(false);
                             break;
 
                         case "Lock Screen Unused":
@@ -426,7 +433,6 @@ namespace MonkePhone.Behaviours
 
         public bool SoundExists(Sound sound) => !sound.Equals(default(Sound));
         public Sound GetSound(string soundId) => _sounds.FirstOrDefault(sound => sound.Id == soundId);
-
         public struct Sound
         {
             public string Id;
@@ -559,7 +565,7 @@ namespace MonkePhone.Behaviours
             _openedApps.ForEach(app => CloseApp_Local(app.AppId, false));
             _openedApps.Clear();
 
-            _homeMenuObject.SetActive(InHomeScreen && !IsOutdated);
+            _homeMenuObject.SetActive(InHomeScreen && !IsOutdated && !_LockScreenObject.activeSelf);
             _outdatedMenuObject.SetActive(IsOutdated);
             Keyboard.Active = false;
         }
@@ -588,7 +594,7 @@ namespace MonkePhone.Behaviours
                 _LockScreenObject.SetActive(false);
             }
 
-            _homeMenuObject.SetActive(IsPowered && InHomeScreen && !IsOutdated);
+            _homeMenuObject.SetActive(IsPowered && InHomeScreen && !IsOutdated && !_LockScreenObject.activeSelf);
             _outdatedMenuObject.SetActive(IsPowered && IsOutdated);
 
             foreach (PhoneApp app in _openedApps)
