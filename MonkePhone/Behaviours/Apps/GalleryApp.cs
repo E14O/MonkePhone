@@ -1,8 +1,10 @@
-﻿using MonkePhone.Behaviours.UI;
+﻿using GorillaNetworking;
+using MonkePhone.Behaviours.UI;
 using MonkePhone.Extensions;
 using MonkePhone.Models;
 using MonkePhone.Tools;
 using MonkePhone.Utilities;
+using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -208,7 +210,7 @@ namespace MonkePhone.Behaviours.Apps
             switch (Configuration.UploadMethod.Value)
             {
                 case Configuration.EUploadMethod.Webhook:
-                    form.AddField("username", Constants.Name);
+                    form.AddField("username", $"MonkeGram - {GorillaComputer.instance.currentName}");
                     form.AddField("content", message);
                     form.AddBinaryData("file", image, "image.png", "image/png");
 
@@ -243,7 +245,7 @@ namespace MonkePhone.Behaviours.Apps
                     }
                     break;
                 case Configuration.EUploadMethod.CustomServer:
-                    form.AddField("username", Constants.Name);
+                    form.AddField("username", $"MonkeGram - {GorillaComputer.instance.currentName}");
                     form.AddField("content", message);
                     form.AddBinaryData("file1", image, image_name, "image/png");
 

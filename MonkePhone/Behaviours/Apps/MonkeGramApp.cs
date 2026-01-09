@@ -133,7 +133,7 @@ namespace MonkePhone.Behaviours.Apps
             _wasShutterActivated = true;
 
             string currentName = PhotonNetwork.LocalPlayer.GetName(GorillaTagger.Instance.offlineVRRig, false); // we already know our player has the phone, they're taking the photo
-            string currentMap = ZoneActivationPatch.ActiveZones.First().ToTitleCase().ToUpper();
+            string currentMap = ZoneActivationPatch.ActiveZones.First().ToTitleCase().ToLower();
 
             if (ModIOManager.IsLoggedIn())
             {
