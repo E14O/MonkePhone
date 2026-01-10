@@ -37,8 +37,8 @@ namespace MonkePhone.Behaviours
         private readonly List<Sound> _sounds = [];
         private readonly List<AudioSource> _audioSourceCache = [];
 
-        private GameObject _homeMenuObject, _outdatedMenuObject, _LockScreenObject, _TopBarObject;
-        private RawImage _genericWallpaper, _customWallpaper;
+        private GameObject _homeMenuObject, _outdatedMenuObject, _LockScreenObject, _TopBarObject, _genericWallpaper;
+        private RawImage _customWallpaper;
 
         private Text _TimeText, _DateText, _TimeTextTB;
 
@@ -126,7 +126,7 @@ namespace MonkePhone.Behaviours
                     {
                         case "Home Screen":
                             _homeMenuObject = t.gameObject;
-                            _genericWallpaper = t.Find("GenericBackground").GetComponent<RawImage>();
+                            _genericWallpaper = t.Find("GenericBackground").gameObject;
                             _customWallpaper = t.Find("PictureBackground").GetComponent<RawImage>();
                             _homeMenuObject.SetActive(false);
                             break;
@@ -235,13 +235,13 @@ namespace MonkePhone.Behaviours
                     wallpaper.Apply();
                     wallpaper.filterMode = FilterMode.Point;
 
-                    _genericWallpaper.gameObject.SetActive(false);
+                    _genericWallpaper.SetActive(false);
                     _customWallpaper.gameObject.SetActive(true);
                     _customWallpaper.material.mainTexture = wallpaper;
                 }
                 else
                 {
-                    _genericWallpaper.gameObject.SetActive(true);
+                    _genericWallpaper.SetActive(true);
                     _customWallpaper.gameObject.SetActive(false);
                 }
 

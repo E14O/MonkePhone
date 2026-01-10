@@ -15,7 +15,7 @@ namespace MonkePhone.Behaviours
         /// <summary>
         /// This is for testing the post system and other systems on computer. (It does not send the photo to a server it only works if a webhook is set)
         /// </summary>
-        public void OnGUI()
+        /* public void OnGUI()
         {
             if (GUI.Button(new Rect(128f, 210f, 150f, 35f), "HomeButton")) PhoneManager.Instance.SetHome();
 
@@ -60,8 +60,9 @@ namespace MonkePhone.Behaviours
 
                 PhoneManager.Instance.GetApp<GalleryApp>().RelativePhotos.Add(photo);
                 PhoneManager.Instance.GetApp<GalleryApp>().SendWebhook(photo.Summary, photo.Name, photo.Bytes);
+                PhoneManager.Instance.ApplyWallpaper(false, _RandomFile);
             }
-        }
+        } */
 
         private void Update()
         {

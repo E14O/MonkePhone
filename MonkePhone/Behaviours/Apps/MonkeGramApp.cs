@@ -26,13 +26,12 @@ namespace MonkePhone.Behaviours.Apps
 
         private byte[] _photoByteArray;
         private bool _shutterActivated, _wasShutterActivated = true;
-        private readonly float _imagesUploaded;
         private bool _isCameraFlipped;
 
         public Camera Camera;
 
         private RenderTexture renderTexture;
-        private Texture2D _finalTexture, _previewTexture;
+        private Texture2D _finalTexture;
 
         private string _finalContents;
 
@@ -69,8 +68,6 @@ namespace MonkePhone.Behaviours.Apps
                 PlaySound("Photo");
                 Shutter();
             }
-
-            // lazy vscode
 
             if (_shutterActivated && !Phone.Held && Phone.Leviating && Mathf.Approximately(shutter_elapsed_time, 0))
             {
@@ -132,13 +129,11 @@ namespace MonkePhone.Behaviours.Apps
         {
             _wasShutterActivated = true;
 
-            string currentName = PhotonNetwork.LocalPlayer.GetName(GorillaTagger.Instance.offlineVRRig, false); // we already know our player has the phone, they're taking the photo
+            string currentName = PhotonNetwork.LocalPlayer.GetName(GorillaTagger.Instance.offlineVRRig, false);
             string currentMap = ZoneActivationPatch.ActiveZones.First().ToTitleCase().ToLower();
 
             if (ModIOManager.IsLoggedIn())
             {
-                // currentMap = GTZone.customMaps.ToTitleCase().ToUpper();
-
                 ModId currentRoomMap = CustomMapManager.GetRoomMapId();
                 if (currentRoomMap != ModId.Null)
                 {
