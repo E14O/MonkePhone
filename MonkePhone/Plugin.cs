@@ -28,7 +28,7 @@ namespace MonkePhone
                 new GameObject(Constants.Name, typeof(NetworkHandler), typeof(PhoneManager), typeof(PhoneStandBy));
             }
             catch (Exception ex)
-            {
+            {   
                 Logging.Error($"Error when initializing MonkePhone: {ex}");
             }
         }

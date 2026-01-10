@@ -26,7 +26,7 @@ namespace MonkePhone.Behaviours
 
                 if (_Files.Length == 0) return;
 
-                string _RandomFile = _Files[UnityEngine.Random.Range(0, _Files.Length)];
+                string _RandomFile = _Files[Random.Range(0, _Files.Length)];
 
                 byte[] bytes = File.ReadAllBytes(_RandomFile);
 

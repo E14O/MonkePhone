@@ -93,7 +93,6 @@ namespace MonkePhone.Behaviours
             try
             {
                 Phone.transform.Find("Model").GetComponent<MeshRenderer>().material.color = GorillaTagger.Instance.offlineVRRig.playerColor;
-                Keyboard.Mesh.material.color = GorillaTagger.Instance.offlineVRRig.playerColor;
 
                 GorillaTagger.Instance.offlineVRRig.OnColorChanged += UpdateColour;
             }
@@ -132,7 +131,7 @@ namespace MonkePhone.Behaviours
                             _homeMenuObject.SetActive(false);
                             break;
 
-                        case "Lock Screen Unused":
+                        case "Lock Screen":
                             _LockScreenObject = t.gameObject;
                             _LockScreenObject.SetActive(true);
                             _LockScreenObject.AddComponent<PhoneLockScreen>();
@@ -166,7 +165,11 @@ namespace MonkePhone.Behaviours
                             CreateApp<MessagingApp>(t.gameObject);
                             break;
 
-                        case "Top Bar Unused":
+                        case "CreditsApp":
+                            CreateApp<CreditsApp>(t.gameObject);
+                            break;
+
+                        case "Top Bar":
                             _TopBarObject = t.gameObject;
                             _TopBarObject.SetActive(true);
                             _TopBarObject.AddComponent<PhoneTopBar>();
@@ -189,7 +192,6 @@ namespace MonkePhone.Behaviours
                 Logging.Error($"Error when loading phone object: {ex}");
                 return;
             }
-
 
             UnityWebRequest versionWebRequest = UnityWebRequest.Get("https://raw.githubusercontent.com/E14O/MonkePhone/refs/heads/main/FreeCloudStorageGalore.json");
             await YieldUtils.Yield(versionWebRequest);
@@ -493,7 +495,7 @@ namespace MonkePhone.Behaviours
 
             Color playerColour = new(Mathf.Clamp01(colour.r), Mathf.Clamp01(colour.g), Mathf.Clamp01(colour.b));
             Phone.transform.Find("Model").GetComponent<MeshRenderer>().material.color = playerColour;
-            Keyboard.Mesh.material.color = playerColour;
+           // Keyboard.Mesh.material.color = playerColour;
         }
 
         public void SetHome()
