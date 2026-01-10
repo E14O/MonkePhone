@@ -4,22 +4,22 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using MonkePhone.Behaviours.UI;
+using static MonkePhone.Behaviours.PhoneBehaviour;
+using static MonkePhone.Tools.Configuration;
 
 namespace MonkePhone.Behaviours
 {
     public class PhoneLockScreen : MonoBehaviour
     {
-        private GameObject _ActionButton;
         private Text _timeText, _dayText;
         private DateTime Now => DateTime.Now;
         private string Current => Now.ToString("hh:mm tt");
         private string CurrentDay => Now.ToString("dddd, dd MMMM");
 
-        public string ABFunction = "Camera";
+        public static ActionButton ActionButton;
 
         public void Awake()
         {
-            _ActionButton = transform.Find("").gameObject;
             _timeText = transform.Find("time").GetComponent<Text>();
             _dayText = transform.Find("day").GetComponent<Text>();
         }
@@ -30,20 +30,33 @@ namespace MonkePhone.Behaviours
             _dayText.text = CurrentDay;
         }
 
-        public void SetActionButton()
+        public static void SetActionButton()
         {
-            switch (ABFunction)
+            switch (ActionButton)
             {   
-                case "Camera":
-                    PhoneManager.Instance.OpenApp("MonkeGram");
+                case ActionButton.CameraApp:
+                    App("Open", "MonkeGram");
                     break;
 
-                case "Gallery":
+                case ActionButton.GalleryApp:
+                    App("Open", "Gallery");
                     break;
 
-                case "Settings":
+                case ActionButton.ConfigurationApp:
+                    App("Open", "Configuration");
                     break;
 
+                case ActionButton.MessagingApp:
+                    App("Open", "Messaging");
+                    break;
+
+                case ActionButton.ScoreboardApp:
+                    App("Open", "Scoreboard");
+                    break;
+
+                case ActionButton.CreditsApp:
+                    App("Open", "Credits");
+                    break;
             }
         }
     }

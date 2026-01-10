@@ -35,6 +35,8 @@ namespace MonkePhone.Tools
 
         public static ConfigEntry<EInitialPhoneLocation> InitialPosition;
 
+        public static ConfigEntry<ActionButton> AButton;
+
         public static ConfigEntry<bool> HandSwapping;
 
         public static ConfigEntry<bool> PlayerMention;
@@ -169,7 +171,15 @@ namespace MonkePhone.Tools
                 "Behaviour",
                 "Reveal Map",
                 true,
-                new ConfigDescription("whether the current map should be disclosed in posts")
+                new ConfigDescription("Whether the current map should be disclosed in posts")
+            );
+
+            AButton = File.Bind
+            (
+                "Behaviour",
+                "ActionButton",
+                ActionButton.CameraApp,
+                new ConfigDescription("This decides what the action button on the lock screen opens")
             );
 
             ObjectHaptics = File.Bind
@@ -235,6 +245,17 @@ namespace MonkePhone.Tools
         {
             Webhook,
             CustomServer
+        }
+
+        public enum ActionButton
+        {
+            CameraApp,
+            GalleryApp,
+            CreditsApp,
+            MessagingApp,
+            ConfigurationApp,
+            MusicApp,
+            ScoreboardApp
         }
     }
 }

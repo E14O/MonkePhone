@@ -52,6 +52,10 @@ namespace MonkePhone.Behaviours.UI
                 case "PowerButton":
                     InvokeMethod(nameof(PhoneManager.TogglePower));
                     break;
+
+                case "Personal Action":
+                    PhoneLockScreen.SetActionButton();
+                    break;
             }
         }
 #endif

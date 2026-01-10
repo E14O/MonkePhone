@@ -24,10 +24,24 @@ namespace MonkePhone.Behaviours
 
         public void PlaySound(string soundId, float volume = 1f) => InvokeMethod("PlaySound", soundId, volume);
 
-        public void InvokeMethod(string methodName, params object[] parameters)
+        public static void InvokeMethod(string methodName, params object[] parameters)
         {
             MethodInfo method = AccessTools.Method(typeof(PhoneManager), methodName);
             method?.Invoke(PhoneManager.Instance, parameters);
+        }
+
+        public static void App(string _AppState, string _AppID)
+        {
+            switch (_AppState)
+            {
+                case "Open":
+                    InvokeMethod("OpenApp", _AppID);
+                    break;
+
+                case "Close":
+                    InvokeMethod("CloseApp", _AppID);
+                    break;
+            }
         }
 #endif
     }

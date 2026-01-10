@@ -430,6 +430,7 @@ namespace MonkePhone.Behaviours
 
             _openedApps.Add(app);
             _homeMenuObject.SetActive(false);
+            _LockScreenObject.SetActive(false);
 
             app.gameObject.SetActive(true);
             app.AppOpened();
@@ -522,6 +523,8 @@ namespace MonkePhone.Behaviours
             Keyboard.Active = false;
         }
 
+
+
         public void TogglePower() => SetPower(!IsPowered);
 
         public void SetPower(bool usePoweredState)
@@ -551,7 +554,7 @@ namespace MonkePhone.Behaviours
 
             foreach (PhoneApp app in _openedApps)
             {
-                app.gameObject.SetActive(IsPowered);
+                app.gameObject.SetActive(false);
             }
 
             PlaySound(IsPowered ? "PadShow" : "PadHide", 0.4f);
