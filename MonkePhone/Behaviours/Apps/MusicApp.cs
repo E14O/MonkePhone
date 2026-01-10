@@ -18,6 +18,8 @@ namespace MonkePhone.Behaviours.Apps
     {
         public override string AppId => "Music";
 
+        // Plan: most of the following code will be re-written.
+
         private List<string> _musicList;
         private Dictionary<string, AudioClip> _musicComparison = [];
 

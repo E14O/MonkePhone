@@ -9,17 +9,13 @@ namespace MonkePhone.Behaviours
     public class PhoneStandBy : MonoBehaviour
     {
         /// <summary>
-        /// This is for testing the post system on computer. (It does not send the photo to a server it only works with the webhook)
+        /// This is for testing the post system and other systems on computer. (It does not send the photo to a server it only works if a webhook is set)
         /// </summary>
         public void OnGUI()
         {
             if (GUI.Button(new Rect(128f, 210f, 150f, 35f), "HomeButton")) PhoneManager.Instance.SetHome();
 
             if (GUI.Button(new Rect(128f, 170f, 150f, 35f), "PowerButton")) PhoneManager.Instance.TogglePower();
-
-            bool open = GUI.Button(new Rect(128f, 250f, 150f, 35f), "GorillaGram");
-            if (!open) PhoneManager.Instance.OpenApp("GorillaGram");
-            else PhoneManager.Instance.CloseApp("GorillaGram");
 
             bool post = GUI.Button(new Rect(128f, 130f, 150f, 35f), "Post Sample");
             if (post)
@@ -46,14 +42,9 @@ namespace MonkePhone.Behaviours
             }
         }
 
-        public void ImtootiredtoeventhinkicantevenstartonhowtodothismoostasssimplecodebroplslikebrotherlookatthisScriptNameitscalledphonestandbylikeWhoevencallsaCSfilethat()
-        {
-
-        }
-
         private void Update()
         {
-            if (UnityEngine.InputSystem.Keyboard.current.tabKey.wasPressedThisFrame))
+            if (UnityEngine.InputSystem.Keyboard.current.tabKey.wasPressedThisFrame)
             {
 
             }

@@ -145,7 +145,7 @@ namespace MonkePhone.Behaviours.Apps
                     _galleryText.text = "";
                     _galleryPhoto.enabled = false;
                     _gallerySelection.text = "";
-                    //_deleteButton.SetActive(false);
+                    _deleteButton.SetActive(false);
                     _uploadButton.SetActive(false);
                     thumbnailButton.SetActive(false);
                     return;
@@ -153,7 +153,7 @@ namespace MonkePhone.Behaviours.Apps
 
                 _currentPhoto = MathEx.Wrap(_currentPhoto, 0, _photoComparison.Count);
 
-                //_deleteButton.SetActive(true);
+                _deleteButton.SetActive(true);
                 thumbnailButton.SetActive(true);
 
                 var tex = new Texture2D(2, 2);

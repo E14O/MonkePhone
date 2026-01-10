@@ -209,7 +209,7 @@ namespace MonkePhone.Tools
         {
             [Description("The phone will be placed on the table in stump")]
             Table,
-            [Description("The phone will levitate in the centre of stump")]
+            [Description("The phone will levitate in the center of stump")]
             Levitate,
             [Description("The phone will be mounted to the waist of the player")]
             Waist
@@ -228,7 +228,7 @@ namespace MonkePhone.Tools
             [Description("2k 2^11")]
             Ultra = 2048,
             [Description("4k 2^12")]
-            Profesional = 4096
+            Professional = 4096
         }
 
         public enum EUploadMethod
