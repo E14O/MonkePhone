@@ -37,8 +37,8 @@ namespace MonkePhone.Behaviours
         private readonly List<Sound> _sounds = [];
         private readonly List<AudioSource> _audioSourceCache = [];
 
-        private GameObject _homeMenuObject, _outdatedMenuObject, _LockScreenObject, _TopBarObject, _genericWallpaper;
-        private RawImage _customWallpaper;
+        private GameObject _homeMenuObject, _outdatedMenuObject, _LockScreenObject, _TopBarObject, _genericWallpaperHS, _genericWallpaperLS;
+        private RawImage _customWallpaperHS, _customWallpaperLS;
 
         private Text _TimeText, _DateText, _TimeTextTB;
 
@@ -126,14 +126,17 @@ namespace MonkePhone.Behaviours
                     {
                         case "Home Screen":
                             _homeMenuObject = t.gameObject;
-                            _genericWallpaper = t.Find("GenericBackground").gameObject;
-                            _customWallpaper = t.Find("PictureBackground").GetComponent<RawImage>();
+                            _genericWallpaperHS = t.Find("GenericBackground").gameObject;
+                            _customWallpaperHS = t.Find("PictureBackground").GetComponent<RawImage>();
                             _homeMenuObject.SetActive(false);
                             break;
 
                         case "Lock Screen":
                             _LockScreenObject = t.gameObject;
+                            _genericWallpaperLS = t.Find("GenericBackground").gameObject;
+                            _customWallpaperLS = t.Find("PictureBackground").GetComponent<RawImage>();
                             _LockScreenObject.SetActive(true);
+
                             _LockScreenObject.AddComponent<PhoneLockScreen>();
                             break;
 
@@ -235,17 +238,24 @@ namespace MonkePhone.Behaviours
                     wallpaper.Apply();
                     wallpaper.filterMode = FilterMode.Point;
 
-                    _genericWallpaper.SetActive(false);
-                    _customWallpaper.gameObject.SetActive(true);
-                    _customWallpaper.material.mainTexture = wallpaper;
+                    _genericWallpaperLS.SetActive(false);
+                    _customWallpaperLS.gameObject.SetActive(true);
+                    _customWallpaperLS.material.mainTexture = wallpaper;
+
+                    _genericWallpaperHS.SetActive(false);
+                    _customWallpaperHS.gameObject.SetActive(true);
+                    _customWallpaperHS.material.mainTexture = wallpaper;
                 }
                 else
                 {
-                    _genericWallpaper.SetActive(true);
-                    _customWallpaper.gameObject.SetActive(false);
+                    _genericWallpaperHS.SetActive(true);
+                    _customWallpaperHS.gameObject.SetActive(false);
+
+                    _genericWallpaperLS.SetActive(false);
+                    _customWallpaperLS.gameObject.SetActive(false);
                 }
 
-                Logging.Log("passed applying wallpaper");
+                Logging.Log("MonkePhone: Applied wall paper to lock screen and home screen");
             }
 
             catch (Exception ex)
@@ -304,8 +314,11 @@ namespace MonkePhone.Behaviours
 
         public void ApplyWallpaper(bool useGenericWallpaper, string customImageName)
         {
-            _genericWallpaper.gameObject.SetActive(useGenericWallpaper);
-            _customWallpaper.gameObject.SetActive(!useGenericWallpaper);
+            _genericWallpaperLS.gameObject.SetActive(useGenericWallpaper);
+            _customWallpaperLS.gameObject.SetActive(!useGenericWallpaper);
+
+            _genericWallpaperHS.gameObject.SetActive(useGenericWallpaper);
+            _customWallpaperHS.gameObject.SetActive(!useGenericWallpaper);
 
             Configuration.WallpaperName.Value = customImageName;
 
@@ -324,7 +337,8 @@ namespace MonkePhone.Behaviours
             tex.LoadImage(File.ReadAllBytes(name));
             tex.Apply();
 
-            _customWallpaper.material.mainTexture = tex;
+            _customWallpaperLS.material.mainTexture = tex;
+            _customWallpaperHS.material.mainTexture = tex;
         }
 
         #region Sounds
