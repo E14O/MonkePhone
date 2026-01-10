@@ -211,7 +211,7 @@ namespace MonkePhone.Behaviours.Apps
 				var component = _streambleMusicComponents.ElementAtOrDefault(index);
 				if (!component) return;
 
-				component.UpdateText(component.song.dlState != Song.DownloadState.Downloaded ? Song.DownloadState.Awaiting : Song.DownloadState.Downloaded);
+				component.UpdateText(component.song.currentState != Song.DownloadState.Downloaded ? Song.DownloadState.Awaiting : Song.DownloadState.Downloaded);
 				var state = await component.song.Download();
 				if (state == Song.DownloadState.None) return;
 
@@ -510,12 +510,12 @@ namespace MonkePhone.Behaviours.Apps
 				nameText.text = song.title;
 				coverArt.texture = null;
 
-				if (!song.IsDownloaded && song.dlState == Song.DownloadState.Downloaded)
+				if (!song.IsDownloaded && song.currentState == Song.DownloadState.Downloaded)
 				{
-					song.dlState = Song.DownloadState.None;
+					song.currentState = Song.DownloadState.None;
 				}
 
-				UpdateText(song.dlState);
+				UpdateText(song.currentState);
 
 				if (string.IsNullOrWhiteSpace(song.coverUrl)) return;
 

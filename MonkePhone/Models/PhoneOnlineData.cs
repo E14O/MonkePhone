@@ -37,7 +37,7 @@ namespace MonkePhone.Models
 
         [NonSerialized]
         public DownloadState currentState;
-        internal DownloadState dlState;
+       
 
         public async Task<DownloadState> Download()
         {
