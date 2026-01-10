@@ -1,17 +1,15 @@
-﻿using BepInEx;
-using GorillaNetworking;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using BepInEx;
 using MonkePhone.Behaviours.Apps;
 using MonkePhone.Extensions;
 using MonkePhone.Interfaces;
 using MonkePhone.Models;
 using MonkePhone.Tools;
 using MonkePhone.Utilities;
-using Photon.Pun;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -111,54 +109,6 @@ namespace MonkePhone.Behaviours
             }
         }
 
-        /// <summary>
-        /// This is for testing the post system on computer. (It does not send the photo to a server it only works with the webhook)
-        /// </summary>
-        public void OnGUI()
-        {
-            if (GUI.Button(new Rect(128f, 210f, 150f, 35f), "HomeButton"))
-            {
-                SetHome();
-            }
-            if (GUI.Button(new Rect(128f, 170f, 150f, 35f), "PowerButton"))
-            {
-                TogglePower();
-            }
-
-            bool open = GUI.Button(new Rect(128f, 250f, 150f, 35f), "GorillaGram");
-            if (!open)
-                OpenApp("GorillaGram");
-            else
-                CloseApp("GorillaGram");
-
-
-                bool flag = GUI.Button(new Rect(128f, 130f, 150f, 35f), "Post Sample");
-            if (flag)
-            {
-                string _Folder = PhotosPath; 
-
-                var _Files = Directory.GetFiles(_Folder, "*.png"); 
-
-                if (_Files.Length == 0)
-                    return;
-
-                string _RandomFile = _Files[UnityEngine.Random.Range(0, _Files.Length)];
-
-                byte[] bytes = File.ReadAllBytes(_RandomFile);
-
-                Photo photo = new Photo
-                {
-                    Name = Path.GetFileName(_RandomFile),
-                    Bytes = bytes,
-                    Summary = $"{GorillaComputer.instance.currentName} posted a photo:"
-                };
-
-                GetApp<GalleryApp>().RelativePhotos.Add(photo);
-                GetApp<GalleryApp>().SendWebhook(photo.Summary, photo.Name, photo.Bytes);
-            }
-        }
-
-
         public async Task Initialize()
         {
             Logging.Info("Starting init");
@@ -203,7 +153,7 @@ namespace MonkePhone.Behaviours
                         case "GalleryApp":
                             CreateApp<GalleryApp>(t.gameObject);
                             break;
-                            
+
                         case "MusicApp":
                             CreateApp<MusicApp>(t.gameObject);
                             break;
@@ -220,7 +170,7 @@ namespace MonkePhone.Behaviours
                             _TopBarObject = t.gameObject;
                             _TopBarObject.SetActive(true);
                             _TopBarObject.AddComponent<PhoneTopBar>();
-                            break; 
+                            break;
 
                         default:
                             if (t.TryGetComponent(out PhoneHandDependentObject component))

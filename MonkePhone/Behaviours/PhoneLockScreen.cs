@@ -33,7 +33,7 @@ namespace MonkePhone.Behaviours
         public void SetActionButton()
         {
             switch (ABFunction)
-            {
+            {   
                 case "Camera":
                     PhoneManager.Instance.OpenApp("MonkeGram");
                     break;
