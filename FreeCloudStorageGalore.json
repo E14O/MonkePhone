@@ -1,26 +1,51 @@
 {
     "version": "1.0.5",
-    "invite": "https://discord.gg/MFA5qn385z",
-    "phoneEmoji" : "<:monkephone:1377063021758779454>",
+    "invite": "https://discord.gg/MFA5qn385z", 
+    "phoneEmoji" : "<:MonkePhone:1459949308345454592>",
     "cosmeticEmoji" :
     [
         {
             "cosmeticId" : "LBAAK.",
-            "emoji" : "<:stick:1382942646942695484>"
+            "emoji" : "<:stick:1459960459598762189>"
         },
         {
             "cosmeticId" : "LBADE.",
-            "emoji" : "<:fingerpainter:1382942649476190238>"
+            "emoji" : "<:fingerpainter:1459960325632692227>"
         },
         {
             "cosmeticId" : "LBAGS.",
-            "emoji" : "<:illustrator:1382942648305979442>"
+            "emoji" : "<:illustrator:1459960259614609532>"
+        },
+        {
+            "cosmeticId" : "LBAAD.",
+            "emoji" : "<:adminbadge:1459962254786040056>"
+        },
+        {
+            "cosmeticId" : "LMAPY.",
+            "emoji" : "<:firestick:1459962551692693698>"
+        },
+        {
+            "cosmeticId" : "LMAJA.",
+            "emoji" : "<:monkeplush:1459960745306361865>"
+        },
+        {
+            "cosmeticId" : "LBAAE.",
+            "emoji" : "<:earlyaccess:1459960495539884315>"
         }
     ],
-    "userSpecificEmoji" : [
+    "userSpecificEmoji" : 
+    [
         {
-            "userId" : "E354E818871BD1D8",
-            "emoji" : "<:Dev:1265372162869563555>"
+            "userId" : "69A435FFE0F643E8",
+            "emoji" : "<:e14o:1459967805423222955>"
+        },
+        {
+            "userId" : "",
+            "emoji" : "<:h4rns:>"
+        },
+        {
+            "userId" : "",
+            "emoji" : "<:spanky:>"
         }
     ],
     "songs" : [
