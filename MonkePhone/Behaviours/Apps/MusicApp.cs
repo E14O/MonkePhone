@@ -37,10 +37,10 @@ namespace MonkePhone.Behaviours.Apps
 
 		public override void Initialize()
 		{
-			Debug.Log("[MusicApp] Initialize called");
+			Logging.Log("[MusicApp] Initialize called");
 
 			MusicSource = GorillaLocomotion.GTPlayer.Instance.gameObject.AddComponent<AudioSource>();
-			Debug.Log("[MusicApp] AudioSource created and added to player");
+			Logging.Log("[MusicApp] AudioSource created and added to player");
 
 			_songTitle = transform.Find("CurrentlyPlayingContents/AudioTitle").GetComponent<Text>();
 			_songTimePosition = transform.Find("CurrentlyPlayingContents/Timeline/Slider/Text (Legacy)").GetComponent<Text>();
@@ -51,12 +51,12 @@ namespace MonkePhone.Behaviours.Apps
 			SetVolumeMultiplier(Configuration.MusicMultiplier.Value);
 			SetSpatialBlend(Configuration.UseSpatialBlend.Value);
 
-			Debug.Log("[MusicApp] Finished setting up UI references and audio settings");
+			Logging.Log("[MusicApp] Finished setting up UI references and audio settings");
 
 			EvaluateMusicList();
 			_inDownloadView = _musicList.Count == 0;
 
-			Debug.Log($"[MusicApp] Music list evaluated. Found {_musicList.Count} songs.");
+			Logging.Log($"[MusicApp] Music list evaluated. Found {_musicList.Count} songs.");
 		}
 
 		public void Update()
@@ -89,14 +89,14 @@ namespace MonkePhone.Behaviours.Apps
 
 		public override void AppOpened()
 		{
-			Debug.Log("[MusicApp] AppOpened called");
+			Logging.Log("[MusicApp] AppOpened called");
 			EvaluateMusicList();
 			RefreshSuitableContainer();
 		}
 
 		private void EvaluateMusicList()
 		{
-			Debug.Log("[MusicApp] Evaluating music list...");
+			Logging.Log("[MusicApp] Evaluating music list...");
 			var current = _musicList;
 			_musicList = Directory.GetFiles(PhoneManager.Instance.MusicPath)
 				.Where(file => file.ToLower().EndsWith(".mp3") || file.ToLower().EndsWith(".ogg") || file.ToLower().EndsWith(".wav"))
@@ -108,12 +108,12 @@ namespace MonkePhone.Behaviours.Apps
 				_musicComparison.Remove(str);
 			}
 
-			Debug.Log($"[MusicApp] Music list evaluation complete. Found {_musicList.Count} files.");
+			Logging.Log($"[MusicApp] Music list evaluation complete. Found {_musicList.Count} files.");
 		}
 
 		private void RefreshSuitableContainer()
 		{
-			Debug.Log($"[MusicApp] Refreshing container. _inDownloadView={_inDownloadView}");
+			Logging.Log($"[MusicApp] Refreshing container. _inDownloadView={_inDownloadView}");
 			transform.Find("MusicDownloadContainer").gameObject.SetActive(_inDownloadView);
 			transform.Find("MusicPlayerContainer").gameObject.SetActive(!_inDownloadView);
 			if (_inDownloadView)
@@ -129,7 +129,7 @@ namespace MonkePhone.Behaviours.Apps
 
 		private void RefreshDownloadables()
 		{
-			Debug.Log("[MusicApp] Refreshing downloadable songs");
+			Logging.Log("[MusicApp] Refreshing downloadable songs");
 			_currentPage = MathEx.Wrap(_currentPage, 0, Mathf.CeilToInt(PhoneManager.Instance.Data.songs.Length / 3f));
 			Song[] songs = {
 				PhoneManager.Instance.Data.songs.ElementAtOrDefault((_currentPage * 3) + 0),
@@ -164,7 +164,7 @@ namespace MonkePhone.Behaviours.Apps
 
 		private void RefreshSongList()
 		{
-			Debug.Log("[MusicApp] Refreshing local song list UI");
+			Logging.Log("[MusicApp] Refreshing local song list UI");
 			Transform table = transform.Find("MusicPlayerContainer/Table");
 			Transform noSongs = transform.Find("MusicPlayerContainer/NoMusic");
 			table.gameObject.SetActive(_musicList.Count > 0);
@@ -190,7 +190,7 @@ namespace MonkePhone.Behaviours.Apps
 				{
 					if (!_musicComparison.ContainsKey(song))
 					{
-						Debug.Log($"[MusicApp] Loading track for UI: {song}");
+						Logging.Log($"[MusicApp] Loading track for UI: {song}");
 						await LoadTrack(song);
 					}
 
@@ -204,7 +204,7 @@ namespace MonkePhone.Behaviours.Apps
 
 		public override async void ButtonClick(PhoneUIObject phoneUIObject, bool isLeftHand)
 		{
-			Debug.Log($"[MusicApp] Button clicked: {phoneUIObject.name}");
+			Logging.Log($"[MusicApp] Button clicked: {phoneUIObject.name}");
 			if (phoneUIObject.name.StartsWith("download"))
 			{
 				int index = int.Parse(phoneUIObject.name[^1].ToString()) - 1;
@@ -261,11 +261,11 @@ namespace MonkePhone.Behaviours.Apps
 								_currentMusic = trackIndex;
 							}
 
-							Debug.Log("[MusicApp] Music toggle clicked");
+							Logging.Log("[MusicApp] Music toggle clicked");
 
 							if (MusicSource.clip == null || MusicSource.clip.name != Path.GetFileName(_musicList[_currentMusic]))
 							{
-								Debug.Log("[MusicApp] Setting new track...");
+								Logging.Log("[MusicApp] Setting new track...");
 								_isLoadingMusic = true;
 								StartCoroutine(SetTrack(_musicList[_currentMusic]));
 								return;
@@ -273,12 +273,12 @@ namespace MonkePhone.Behaviours.Apps
 
 							if (MusicSource.isPlaying)
 							{
-								Debug.Log("[MusicApp] Pausing music");
+								Logging.Log("[MusicApp] Pausing music");
 								MusicSource.Pause();
 							}
 							else
 							{
-								Debug.Log("[MusicApp] Playing music");
+								Logging.Log("[MusicApp] Playing music");
 								MusicSource.Play();
 							}
 						}
@@ -296,11 +296,11 @@ namespace MonkePhone.Behaviours.Apps
 								_currentMusic = trackIndex;
 							}
 
-							Debug.Log("[MusicApp] Music toggle clicked");
+							Logging.Log("[MusicApp] Music toggle clicked");
 
 							if (MusicSource.clip == null || MusicSource.clip.name != Path.GetFileName(_musicList[_currentMusic]))
 							{
-								Debug.Log("[MusicApp] Setting new track...");
+								Logging.Log("[MusicApp] Setting new track...");
 								_isLoadingMusic = true;
 								StartCoroutine(SetTrack(_musicList[_currentMusic]));
 								return;
@@ -308,12 +308,12 @@ namespace MonkePhone.Behaviours.Apps
 
 							if (MusicSource.isPlaying)
 							{
-								Debug.Log("[MusicApp] Pausing music");
+								Logging.Log("[MusicApp] Pausing music");
 								MusicSource.Pause();
 							}
 							else
 							{
-								Debug.Log("[MusicApp] Playing music");
+								Logging.Log("[MusicApp] Playing music");
 								MusicSource.Play();
 							}
 						}
@@ -331,11 +331,11 @@ namespace MonkePhone.Behaviours.Apps
 								_currentMusic = trackIndex;
 							}
 
-							Debug.Log("[MusicApp] Music toggle clicked");
+							Logging.Log("[MusicApp] Music toggle clicked");
 
 							if (MusicSource.clip == null || MusicSource.clip.name != Path.GetFileName(_musicList[_currentMusic]))
 							{
-								Debug.Log("[MusicApp] Setting new track...");
+								Logging.Log("[MusicApp] Setting new track...");
 								_isLoadingMusic = true;
 								StartCoroutine(SetTrack(_musicList[_currentMusic]));
 								return;
@@ -343,12 +343,12 @@ namespace MonkePhone.Behaviours.Apps
 
 							if (MusicSource.isPlaying)
 							{
-								Debug.Log("[MusicApp] Pausing music");
+								Logging.Log("[MusicApp] Pausing music");
 								MusicSource.Pause();
 							}
 							else
 							{
-								Debug.Log("[MusicApp] Playing music");
+								Logging.Log("[MusicApp] Playing music");
 								MusicSource.Play();
 							}
 						}
@@ -361,12 +361,12 @@ namespace MonkePhone.Behaviours.Apps
 						{
 							if (MusicSource.isPlaying)
 							{
-								Debug.Log("[MusicApp] Pausing music");
+								Logging.Log("[MusicApp] Pausing music");
 								MusicSource.Pause();
 							}
 							else
 							{
-								Debug.Log("[MusicApp] Playing music");
+								Logging.Log("[MusicApp] Playing music");
 								MusicSource.Play();
 							}
 						}
@@ -396,7 +396,7 @@ namespace MonkePhone.Behaviours.Apps
 		{
 			try
 			{
-				Debug.Log("[MusicApp] Refreshing app view");
+				Logging.Log("[MusicApp] Refreshing app view");
 				if (_songMissing != null)
 				{
 					_songMissing.gameObject.SetActive(_musicList.Count == 0);
@@ -430,7 +430,7 @@ namespace MonkePhone.Behaviours.Apps
 		{
 			if (_musicComparison.ContainsKey(path)) return;
 
-			Debug.Log($"[MusicApp] Loading track: {path}");
+			Logging.Log($"[MusicApp] Loading track: {path}");
 
 			AudioType audioType = AudioType.UNKNOWN;
 			if (path.EndsWith(".mp3")) audioType = AudioType.MPEG;
@@ -444,7 +444,7 @@ namespace MonkePhone.Behaviours.Apps
 			if (webRequest.result == UnityWebRequest.Result.Success)
 			{
 				_musicComparison.Add(path, downloadHandler.audioClip);
-				Debug.Log("[MusicApp] Track loaded successfully");
+				Logging.Log("[MusicApp] Track loaded successfully");
 				SetTrack(path);
 			}
 			else
@@ -455,7 +455,7 @@ namespace MonkePhone.Behaviours.Apps
 
 		public IEnumerator SetTrack(string path)
 		{
-			Debug.Log($"[MusicApp] Setting track: {path}");
+			Logging.Log($"[MusicApp] Setting track: {path}");
 
 			AudioType audioType = AudioType.UNKNOWN;
 			if (path.EndsWith(".mp3")) audioType = AudioType.MPEG;
@@ -470,7 +470,7 @@ namespace MonkePhone.Behaviours.Apps
 
 			if (webRequest.result == UnityWebRequest.Result.Success)
 			{
-				Debug.Log("[MusicApp] SetTrack successful, starting playback");
+				Logging.Log("[MusicApp] SetTrack successful, starting playback");
 				downloadHandler.audioClip.name = Path.GetFileName(path);
 				MusicSource.clip = downloadHandler.audioClip;
 
@@ -489,13 +489,13 @@ namespace MonkePhone.Behaviours.Apps
 
 		public void SetVolumeMultiplier(float multiplier)
 		{
-			Debug.Log($"[MusicApp] Setting volume multiplier to {multiplier}");
+			Logging.Log($"[MusicApp] Setting volume multiplier to {multiplier}");
 			MusicSource.volume = 0.1f * multiplier;
 		}
 
 		public void SetSpatialBlend(bool useSpatialBlend)
 		{
-			Debug.Log($"[MusicApp] Setting spatial blend: {useSpatialBlend}");
+			Logging.Log($"[MusicApp] Setting spatial blend: {useSpatialBlend}");
 			MusicSource.spatialBlend = (useSpatialBlend ? 1f : 0f);
 		}
 

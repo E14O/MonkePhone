@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using MonkePhone.Behaviours.UI;
 using static MonkePhone.Behaviours.PhoneBehaviour;
 using static MonkePhone.Tools.Configuration;
+using BepInEx.Configuration;
 
 namespace MonkePhone.Behaviours
 {
@@ -15,8 +16,6 @@ namespace MonkePhone.Behaviours
         private DateTime Now => DateTime.Now;
         private string Current => Now.ToString("hh:mm tt");
         private string CurrentDay => Now.ToString("dddd, dd MMMM");
-
-        public static ActionButton ActionButton;
 
         public void Awake()
         {
@@ -32,7 +31,7 @@ namespace MonkePhone.Behaviours
 
         public static void SetActionButton()
         {
-            switch (ActionButton)
+            switch (AButton.Value)
             {   
                 case ActionButton.CameraApp:
                     App("Open", "MonkeGram");
@@ -56,6 +55,10 @@ namespace MonkePhone.Behaviours
 
                 case ActionButton.CreditsApp:
                     App("Open", "Credits");
+                    break;
+
+                case ActionButton.MusicApp:
+                    App("Open", "Music");
                     break;
             }
         }
