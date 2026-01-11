@@ -10,8 +10,7 @@ namespace MonkePhone.Behaviours.Apps
 
         private int _currentPage;
 
-        private GameObject _pageOneObj;
-        private GameObject _pageTwoObj;
+        private GameObject _pageOneObj, _pageTwoObj;
         private GameObject _navLabelObj;
 
         private Text _navLabel;
