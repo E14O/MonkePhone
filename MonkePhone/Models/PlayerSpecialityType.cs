@@ -6,6 +6,9 @@
         Stick,
         FingerPainter,
         Illustrator,
-        PlushBacker
+        AdminBadge,
+        FireStick,
+        MonkePlush,
+        EarlyAcess
     }
 }

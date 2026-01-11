@@ -251,7 +251,7 @@ namespace MonkePhone.Behaviours
                     _genericWallpaperHS.SetActive(true);
                     _customWallpaperHS.gameObject.SetActive(false);
 
-                    _genericWallpaperLS.SetActive(false);
+                    _genericWallpaperLS.SetActive(true);
                     _customWallpaperLS.gameObject.SetActive(false);
                 }
 
