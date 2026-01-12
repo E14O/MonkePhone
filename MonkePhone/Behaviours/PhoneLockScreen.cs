@@ -7,6 +7,7 @@ using MonkePhone.Behaviours.UI;
 using static MonkePhone.Behaviours.PhoneBehaviour;
 using static MonkePhone.Tools.Configuration;
 using BepInEx.Configuration;
+using MonkePhone.Behaviours.Apps;
 
 namespace MonkePhone.Behaviours
 {
@@ -34,31 +35,31 @@ namespace MonkePhone.Behaviours
             switch (AButton.Value)
             {   
                 case ActionButton.CameraApp:
-                    App("Open", "MonkeGram");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<MonkeGramApp>().AppId);
                     break;
 
                 case ActionButton.GalleryApp:
-                    App("Open", "Gallery");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<GalleryApp>().AppId);
                     break;
 
                 case ActionButton.ConfigurationApp:
-                    App("Open", "Configuration");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<ConfigurationApp>().AppId);
                     break;
 
                 case ActionButton.MessagingApp:
-                    App("Open", "Messaging");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<MessagingApp>().AppId);
                     break;
 
                 case ActionButton.ScoreboardApp:
-                    App("Open", "Scoreboard");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<ScoreboardApp>().AppId);
                     break;
 
                 case ActionButton.CreditsApp:
-                    App("Open", "Credits");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<CreditsApp>().AppId);
                     break;
 
                 case ActionButton.MusicApp:
-                    App("Open", "Music");
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<MusicApp>().AppId);
                     break;
             }
         }

@@ -29,20 +29,6 @@ namespace MonkePhone.Behaviours
             MethodInfo method = AccessTools.Method(typeof(PhoneManager), methodName);
             method?.Invoke(PhoneManager.Instance, parameters);
         }
-
-        public static void App(string _AppState, string _AppID)
-        {
-            switch (_AppState)
-            {
-                case "Open":
-                    InvokeMethod("OpenApp", _AppID);
-                    break;
-
-                case "Close":
-                    InvokeMethod("CloseApp", _AppID);
-                    break;
-            }
-        }
 #endif
     }
 }

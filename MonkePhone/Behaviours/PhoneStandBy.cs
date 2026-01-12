@@ -3,7 +3,6 @@ using GorillaNetworking;
 using MonkePhone.Behaviours.Apps;
 using MonkePhone.Behaviours.UI;
 using MonkePhone.Models;
-using static MonkePhone.Behaviours.PhoneBehaviour;
 using UnityEngine;
 
 namespace MonkePhone.Behaviours
@@ -30,12 +29,12 @@ namespace MonkePhone.Behaviours
                 {
                     if (!_MonkeGramOpen)
                     {
-                        App("Open", "MonkeGram");
+                        PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<MonkeGramApp>().AppId);
                         _MonkeGramOpen = true;
                     }
                     else
                     {
-                        App("Close", "MonkeGram");
+                        PhoneManager.Instance.CloseApp(PhoneManager.Instance.GetApp<MonkeGramApp>().AppId);
                         _MonkeGramOpen = false;
                     }
                 }
