@@ -10,6 +10,7 @@ namespace MonkePhone.Behaviours
     public class PhoneStandBy : MonoBehaviour
     {
         private bool _MonkeGramOpen = false;
+        private bool _ScoreBoardOpen = false;
         private bool _GUIShow = false;
 
         /// <summary>
@@ -19,9 +20,9 @@ namespace MonkePhone.Behaviours
         {
             if (_GUIShow)
             {
-                if (GUI.Button(new Rect(128f, 210f, 150f, 35f), "HomeButton")) PhoneManager.Instance.SetHome();
-
                 if (GUI.Button(new Rect(128f, 170f, 150f, 35f), "PowerButton")) PhoneManager.Instance.TogglePower();
+
+                if (GUI.Button(new Rect(128f, 210f, 150f, 35f), "HomeButton")) PhoneManager.Instance.SetHome();
 
                 if (GUI.Button(new Rect(128f, 250f, 150f, 35f), "ActionButton")) PhoneLockScreen.SetActionButton();
 
@@ -39,6 +40,19 @@ namespace MonkePhone.Behaviours
                     }
                 }
 
+                if (GUI.Button(new Rect(128f, 310f, 150f, 35f), "ScoreBoard"))
+                {
+                    if (!_ScoreBoardOpen)
+                    {
+                        PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<ScoreboardApp>().AppId);
+                        _ScoreBoardOpen = true;
+                    }
+                    else
+                    {
+                        PhoneManager.Instance.CloseApp(PhoneManager.Instance.GetApp<ScoreboardApp>().AppId);
+                        _ScoreBoardOpen = false;
+                    }
+                }
 
                 bool post = GUI.Button(new Rect(128f, 130f, 150f, 35f), "Post Sample");
                 if (post)

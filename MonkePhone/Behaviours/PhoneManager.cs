@@ -472,7 +472,6 @@ namespace MonkePhone.Behaviours
         }
 
         public bool AppOpened(string appId) => AppOpened(GetApp(appId));
-
         public bool AppOpened(PhoneApp app) => AppExists(app) && _openedApps.Contains(app);
         public bool AppExists(PhoneApp app) => app;
 
