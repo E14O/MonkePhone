@@ -6,7 +6,7 @@
     [
         {
             "cosmeticId" : "LBAAK.",
-            "emoji" : "<:stick:1459992751688122499>"
+            "emoji" : "<:stick:1460354146862629011"
         },
         {
             "cosmeticId" : "LBADE.",
@@ -22,7 +22,7 @@
         },
         {
             "cosmeticId" : "LMAPY.",
-            "emoji" : "<:firestick:1459992493298024488>"
+            "emoji" : "<:firestick:1460354104328192053>"
         },
         {
             "cosmeticId" : "LMAJA.",
@@ -51,9 +51,9 @@
     "songs" : [
         {
             "title" : "SongTitle",
-            "coverUrl" : "SongPath",
-            "fileName" : "Song.mp3",
-            "fileDownloadUrl" : "SongDownloadUrl"
+            "coverUrl" : "SongCover",
+            "fileName" : "SongName.mp3",
+            "fileDownloadUrl" : "SongLink.mp3"
         }
     ]
   }
