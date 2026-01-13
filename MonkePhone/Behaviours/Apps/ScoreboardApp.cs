@@ -16,13 +16,16 @@ namespace MonkePhone.Behaviours.Apps
         private readonly List<GameObject> _playerLines = [];
 
         private Text _roomIdText;
+        private Text _roomNotice;
+
         private GameObject _templateLine;
 
         private const int MaxPlayers = 10;
 
         public override void Initialize()
         {
-            _roomIdText = transform.Find("Header (1)").GetComponent<Text>();
+            _roomIdText = transform.Find("Roominfo").GetComponent<Text>();
+            _roomNotice = transform.Find("Notice").GetComponent<Text>();
             _templateLine = transform.Find("Grid/Person (1)").gameObject;
             _templateLine.SetActive(false);
 
@@ -76,9 +79,7 @@ namespace MonkePhone.Behaviours.Apps
                 for (int i = 0; i < _playerLines.Count; i++)
                     _playerLines[i].SetActive(false);
 
-                _playerNameTexts.Clear();
-                _playerSwatches.Clear();
-                _playerLines.Clear();
+                _roomNotice.gameObject.SetActive(true);
 
                 return;
             }
@@ -102,6 +103,8 @@ namespace MonkePhone.Behaviours.Apps
                 }
 
                 _playerLines[i].SetActive(true);
+
+                _roomNotice.gameObject.SetActive(false);
 
                 GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
 

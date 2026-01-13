@@ -120,7 +120,9 @@ namespace MonkePhone.Networking
             try
             {
                 // get the background for the phone that will display our unique photo
-                _background = Phone.transform.Find("Canvas/Background").GetComponent<RawImage>();
+
+                // make it be monkegram app but u keep the background stuff same cause if not it break background camera thing;
+                _background = Phone.transform.Find("Canvas/MonkeGramApp/Background").GetComponent<RawImage>();
 
                 // make our new unique photo
                 RenderTexture baseRT = (RenderTexture)_background.material.mainTexture;
@@ -128,7 +130,7 @@ namespace MonkePhone.Networking
                 _renderTexture.filterMode = FilterMode.Point;
 
                 // update our camera
-                _camera = Phone.transform.Find("Canvas/cam").GetComponent<Camera>();
+                _camera = Phone.transform.Find("Canvas/MonkeGramApp/cam").GetComponent<Camera>();
                 _camera.targetTexture = _renderTexture;
                 _camera.cullingMask = 1224081207;
                 _camera.gameObject.SetActive(true);
