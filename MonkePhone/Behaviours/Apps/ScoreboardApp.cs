@@ -1,196 +1,151 @@
-﻿using MonkePhone.Behaviours;
-using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine.UI;
-using UnityEngine;
-using MonkePhone.Extensions;
+﻿using System;
 using System.Collections.Generic;
-using GorillaNetworking;
-using System;
+using MonkePhone.Extensions;
+using Photon.Pun;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace MonkePhone.Behaviours.Apps
 {
-	public class ScoreboardApp : PhoneApp
-	{
-		public override string AppId => "Scoreboard";
+    public class ScoreboardApp : PhoneApp
+    {
+        public override string AppId => "Scoreboard";
 
-		private List<Text> _playerNameTexts = new List<Text>();
-		private List<Image> _playerSwatches = new List<Image>();
-		private List<GameObject> _playerLines = new List<GameObject>();
-		private Text _roomIdText;
-		private Transform _grid;
-		private GameObject _templateLine;
-		private const int MaxPlayers = 10;
+        private readonly List<Text> _playerNameTexts = [];
+        private readonly List<Image> _playerSwatches = [];
+        private readonly List<GameObject> _playerLines = [];
 
-		public override void Initialize()
-		{
-			_grid = FindChild(transform, "Grid");
-			if (_grid == null) return;
+        private Text _roomIdText;
+        private GameObject _templateLine;
 
-			_templateLine = FindChild(_grid, "Person (1)")?.gameObject;
-			if (_templateLine == null) return;
+        private const int MaxPlayers = 10;
 
-			_roomIdText = FindChild(transform, "Header (1)")?.GetComponent<Text>();
-			if (_roomIdText == null)
-				_roomIdText = FindChild(transform, "RoomInfo")?.GetComponent<Text>();
+        public override void Initialize()
+        {
+            _roomIdText = transform.Find("Header (1)").GetComponent<Text>();
+            _templateLine = transform.Find("Grid/Person (1)").gameObject;
+            _templateLine.SetActive(false);
 
-			_templateLine.SetActive(false);
-			_playerNameTexts.Clear();
-			_playerSwatches.Clear();
-			_playerLines.Clear();
+            _playerNameTexts.Clear();
+            _playerSwatches.Clear();
+            _playerLines.Clear();
 
-			for (int i = 0; i < MaxPlayers; i++)
-			{
-				GameObject line = i == 0 ? _templateLine : Instantiate(_templateLine, _grid);
-				line.name = $"Person ({i + 1})";
+            for (int i = 0; i < MaxPlayers; i++)
+            {
+                GameObject line = i == 0 ? _templateLine : Instantiate(_templateLine, transform.Find("Grid"));
 
-				Transform nameTransform = FindChild(line.transform, "Name");
-				Transform swatchTransform = FindChild(line.transform, "Swatch");
+                line.name = $"Person ({i + 1})";
+                line.SetActive(false);
 
-				if (nameTransform != null)
-					_playerNameTexts.Add(nameTransform.GetComponent<Text>());
+                _playerLines.Add(line);
+                _playerNameTexts.Add(line.transform.Find("Name").GetComponent<Text>());
+                _playerSwatches.Add(line.transform.Find("Swatch").GetComponent<Image>());
+            }
+        }
 
-				if (swatchTransform != null)
-					_playerSwatches.Add(swatchTransform.GetComponent<Image>());
+        public override void AppOpened()
+        {
+            base.AppOpened();
 
-				_playerLines.Add(line);
-				line.SetActive(false);
-			}
-		}
+            RoomSystem.JoinedRoomEvent += JoinedRoomEvent;
+            RoomSystem.LeftRoomEvent += LeftRoomEvent;
+            RoomSystem.PlayerJoinedEvent += PlayerJoinedEvent;
+            RoomSystem.PlayerLeftEvent += PlayerLeftEvent;
 
-		private Transform FindChild(Transform parent, string name)
-		{
-			Transform direct = parent.Find(name);
-			if (direct != null) return direct;
+            RefreshApp();
+        }
 
-			Transform withBrackets = parent.Find($"[1] {name}");
-			if (withBrackets != null) return withBrackets;
+        public override void AppClosed()
+        {
+            base.AppClosed();
 
-			foreach (Transform child in parent)
-			{
-				if (child.name.Contains(name))
-					return child;
-			}
+            RoomSystem.JoinedRoomEvent -= JoinedRoomEvent;
+            RoomSystem.LeftRoomEvent -= LeftRoomEvent;
+            RoomSystem.PlayerJoinedEvent -= PlayerJoinedEvent;
+            RoomSystem.PlayerLeftEvent -= PlayerLeftEvent;
 
-			return null;
-		}
+            RefreshApp();
+        }
 
-		public override void AppOpened()
-		{
-			base.AppOpened();
+        public void RefreshApp()
+        {
+            _roomIdText.text = PhotonNetwork.CurrentRoom.GetRoomInfo();
 
-			RoomSystem.JoinedRoomEvent += UpdateBoard;
-			RoomSystem.LeftRoomEvent += UpdateBoard;
-			RoomSystem.PlayerJoinedEvent += OnPlayerChanged;
-			RoomSystem.PlayerLeftEvent += OnPlayerChanged;
+            if (!PhotonNetwork.InRoom || _playerLines.Count == 0)
+            {
+                for (int i = 0; i < _playerLines.Count; i++)
+                    _playerLines[i].SetActive(false);
 
-			UpdateBoard();
-		}
+                _playerNameTexts.Clear();
+                _playerSwatches.Clear();
+                _playerLines.Clear();
 
-		public override void AppClosed()
-		{
-			base.AppClosed();
+                return;
+            }
 
-			RoomSystem.JoinedRoomEvent -= UpdateBoard;
-			RoomSystem.LeftRoomEvent -= UpdateBoard;
-			RoomSystem.PlayerJoinedEvent -= OnPlayerChanged;
-			RoomSystem.PlayerLeftEvent -= OnPlayerChanged;
-		}
+            NetPlayer[] players = NetworkSystem.Instance.AllNetPlayers;
+            Array.Sort(players, (a, b) => a.ActorNumber.CompareTo(b.ActorNumber));
 
-		private void OnPlayerChanged(NetPlayer player) => UpdateBoard();
+            for (int i = 0; i < _playerLines.Count; i++)
+            {
+                if (i >= players.Length)
+                {
+                    _playerLines[i].SetActive(false);
+                    continue;
+                }
 
-		public void UpdateBoard()
-		{
-			UpdatePlayerList();
-			UpdateRoomInfo();
-		}
+                NetPlayer player = players[i];
+                if (player == null || player.IsNull || (!player.IsLocal && !player.InRoom))
+                {
+                    _playerLines[i].SetActive(false);
+                    continue;
+                }
 
-		private void SetSwatchColor(Image swatch, VRRig rig)
-		{
-			if (rig == null || swatch == null)
-			{
-				if (swatch != null)
-				{
-					swatch.color = Color.white;
-					swatch.material = null;
-				}
-				return;
-			}
+                _playerLines[i].SetActive(true);
 
-			int setMatIndex = rig.setMatIndex;
-			Material material;
-			Color color;
+                GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
 
-			if (setMatIndex == 0)
-			{
-				material = rig.scoreboardMaterial;
-				color = rig.playerColor;
-			}
-			else
-			{
-				material = rig.materialsToChangeTo[setMatIndex];
-				color = material.color;
-			}
+                _playerNameTexts[i].text = player.GetName();
+                _playerNameTexts[i].color = rig != null ? rig.playerText1.color : Color.white;
 
-			if (swatch.material != material)
-				swatch.material = material;
+                SetSwatchColour(_playerSwatches[i], rig);
+            }
+        }
 
-			if (swatch.color != color)
-				swatch.color = color;
-		}
+        private void SetSwatchColour(Image swatch, VRRig rig)
+        {
+            if (swatch == null)
+                return;
 
-		private void UpdatePlayerList()
-		{
-			if (_playerLines.Count == 0) return;
+            if (rig == null)
+            {
+                swatch.material = null;
+                swatch.color = Color.white;
+                return;
+            }
 
-			NetPlayer[] players = NetworkSystem.Instance.AllNetPlayers;
-			Array.Sort(players, (x, y) => x.ActorNumber.CompareTo(y.ActorNumber));
+            Material material;
 
-			for (int i = 0; i < _playerLines.Count; i++)
-			{
-				if (i < players.Length && PhotonNetwork.InRoom)
-				{
-					NetPlayer player = players[i];
+            if (rig.setMatIndex == 0)
+            {
+                material = rig.scoreboardMaterial;
+                swatch.color = rig.playerColor;
+            }
+            else
+            {
+                material = rig.materialsToChangeTo[rig.setMatIndex];
+                swatch.color = material.color;
+            }
 
-					if (player == null || player.IsNull || (!player.IsLocal && !player.InRoom))
-					{
-						_playerLines[i].SetActive(false);
-						continue;
-					}
+            swatch.material = material;
+        }
 
-					_playerLines[i].SetActive(true);
+        private void JoinedRoomEvent() => RefreshApp();
 
-					VRRig rig = null;
-					if (GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig foundRig))
-					{
-						rig = foundRig;
-					}
+        private void LeftRoomEvent() => RefreshApp();
 
-					if (i < _playerNameTexts.Count && _playerNameTexts[i] != null)
-					{
-						_playerNameTexts[i].text = player.GetName();
-						_playerNameTexts[i].color = rig != null ? rig.playerText1.color : Color.white;
-					}
+        private void PlayerJoinedEvent(NetPlayer player) => RefreshApp();
 
-					if (i < _playerSwatches.Count && _playerSwatches[i] != null)
-					{
-						SetSwatchColor(_playerSwatches[i], rig);
-					}
-				}
-				else
-				{
-					_playerLines[i].SetActive(false);
-				}
-			}
-		}
-
-		private void UpdateRoomInfo()
-		{
-			if (_roomIdText == null) return;
-
-			_roomIdText.text = PhotonNetwork.CurrentRoom.GetRoomInfo();
-		}
-
-		
-	}
+        private void PlayerLeftEvent(NetPlayer player) => RefreshApp();
+    }
 }

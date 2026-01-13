@@ -4,66 +4,77 @@ using Photon.Realtime;
 
 namespace MonkePhone.Extensions
 {
-	public static class RoomEx
-	{
-		public static string GetRoomId(this Room room)
-		{
-			if (room == null || !PhotonNetwork.InRoom)
-				return "Not In Room";
+    public static class RoomEx
+    {
+        public static string GetRoomId(this Room room)
+        {
+            if (room == null || !PhotonNetwork.InRoom)
+                return "Not In Room";
 
-			return room.Name;
-		}
+            return room.Name;
+        }
 
-		public static string GetGameMode(this Room room)
-		{
-			if (room == null || !PhotonNetwork.InRoom)
-				return "None";
+        public static string GetGameMode(this Room room)
+        {
+            if (room == null || !PhotonNetwork.InRoom)
+                return "None";
 
-			if (room.CustomProperties.TryGetValue("gameMode", out object modeObj) && modeObj != null)
-			{
-				string modeStr = modeObj.ToString();
+            if (room.CustomProperties.TryGetValue("gameMode", out object modeObj) && modeObj != null)
+            {
+                string modeStr = modeObj.ToString();
 
-				if (modeStr.Contains("MODDED_Casual"))
-					return "(M)Casual";
-				else if (modeStr.Contains("MODDED_Infection"))
-					return "(M)Infection";
-				else if (modeStr.Contains("MODDED_Guardian"))
-					return "(M)Guardian";
-				else if (modeStr.Contains("MODDED_FreezeTag"))
-					return "(M)FreezeTag";
-				else
-					return modeStr;
-			}
-			else if (GorillaComputer.instance != null)
-			{
-				return GorillaComputer.instance.currentGameMode.Value;
-			}
+                // TODO: someone find out the names of the gamemode values
 
-			return "Unknown";
-		}
+                // if (modeStr.Contains("SUPER_Casual"))
+                // return "(S)Casual";
+                // else if (modeStr.Contains("SUPER_Infection"))
+                //return "(S)Infection";
+                if (modeStr.Contains("Casual"))
+                    return "Casual";
+                else if (modeStr.Contains("Infection"))
+                    return "Infection";
 
-		public static int GetPlayerCount(this Room room)
-		{
-			if (room == null || !PhotonNetwork.InRoom)
-				return 0;
+                // if (modeStr.Contains("MODDED_SUPER_Casual"))
+                // return "(S)(M)Casual";
+                // else if (modeStr.Contains("MODDED_SUPER_Infection"))
+                // return "(S)(M)Infection";
+                if (modeStr.Contains("MODDED_Casual"))
+                    return "(M)Casual";
+                else if (modeStr.Contains("MODDED_Infection"))
+                    return "(M)Infection";
 
-			return room.PlayerCount;
-		}
+                return modeStr;
+            }
+            else if (GorillaComputer.instance != null)
+            {
+                return GorillaComputer.instance.currentGameMode.Value;
+            }
 
-		public static int GetMaxPlayers(this Room room)
-		{
-			if (room == null || !PhotonNetwork.InRoom)
-				return 0;
+            return "Unknown";
+        }
 
-			return room.MaxPlayers;
-		}
+        public static int GetPlayerCount(this Room room)
+        {
+            if (room == null || !PhotonNetwork.InRoom)
+                return 0;
 
-		public static string GetRoomInfo(this Room room)
-		{
-			if (room == null || !PhotonNetwork.InRoom)
-				return "Room Id: Not In Room | GameMode: None";
+            return room.PlayerCount;
+        }
 
-			return $"Room Id: {room.GetRoomId()} | GameMode: {room.GetGameMode()}";
-		}
-	}
+        public static int GetMaxPlayers(this Room room)
+        {
+            if (room == null || !PhotonNetwork.InRoom)
+                return 0;
+
+            return room.MaxPlayers;
+        }
+
+        public static string GetRoomInfo(this Room room)
+        {
+            if (room == null || !PhotonNetwork.InRoom)
+                return "Room Id: Not In Room Game Mode: None";
+
+            return $"Room Id: {room.GetRoomId()} Game Mode: {room.GetGameMode()}";
+        }
+    }
 }
