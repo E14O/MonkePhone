@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MonkePhone.Extensions;
+using MonkePhone.Patches;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
-using ExitGames.Client.Photon;
 
 namespace MonkePhone.Behaviours.Apps
 {
@@ -16,7 +16,6 @@ namespace MonkePhone.Behaviours.Apps
 		private readonly List<Image> _playerSwatches = [];
 		private readonly List<GameObject> _playerLines = [];
 		private readonly List<GameObject> _playerMics = [];
-		private readonly List<GameObject> _playerPhones = [];
 		private readonly List<NetPlayer> _playerRefs = [];
 
 		private Text _roomIdText;
@@ -39,7 +38,6 @@ namespace MonkePhone.Behaviours.Apps
 			_playerSwatches.Clear();
 			_playerLines.Clear();
 			_playerMics.Clear();
-			_playerPhones.Clear();
 			_playerRefs.Clear();
 
 			for (int i = 0; i < MaxPlayers; i++)
@@ -55,9 +53,6 @@ namespace MonkePhone.Behaviours.Apps
 
 				Transform micTransform = line.transform.Find("Mic");
 				_playerMics.Add(micTransform != null ? micTransform.gameObject : null);
-
-				Transform phoneTransform = line.transform.Find("[4] Grid/Phone");
-				_playerPhones.Add(phoneTransform != null ? phoneTransform.gameObject : null);
 
 				_playerRefs.Add(null);
 			}
@@ -98,43 +93,6 @@ namespace MonkePhone.Behaviours.Apps
 
 			UpdateMicIndicators();
 			UpdateSwatches();
-			UpdatePhoneIndicators();
-		}
-
-		private bool HasMonkePhone(NetPlayer player)
-		{
-			if (player == null || player.IsNull)
-				return false;
-
-			var photonPlayer = player.GetPlayerRef();
-			if (photonPlayer == null)
-				return false;
-
-			Hashtable props = photonPlayer.CustomProperties;
-			return props != null && props.ContainsKey(Constants.CustomProperty);
-		}
-
-		private void UpdatePhoneIndicators()
-		{
-			for (int i = 0; i < _playerLines.Count; i++)
-			{
-				if (!_playerLines[i].activeSelf || _playerPhones[i] == null || _playerRefs[i] == null)
-				{
-					if (_playerPhones[i] != null)
-						_playerPhones[i].SetActive(false);
-					continue;
-				}
-
-				NetPlayer player = _playerRefs[i];
-				if (player == null || player.IsNull)
-				{
-					_playerPhones[i].SetActive(false);
-					continue;
-				}
-
-				bool hasPhone = HasMonkePhone(player);
-				_playerPhones[i].SetActive(hasPhone);
-			}
 		}
 
 		private void UpdateSwatches()
@@ -190,8 +148,6 @@ namespace MonkePhone.Behaviours.Apps
 					_playerRefs[i] = null;
 					if (_playerMics[i] != null)
 						_playerMics[i].SetActive(false);
-					if (_playerPhones[i] != null)
-						_playerPhones[i].SetActive(false);
 				}
 
 				_roomNotice.gameObject.SetActive(true);
@@ -210,8 +166,6 @@ namespace MonkePhone.Behaviours.Apps
 					_playerRefs[i] = null;
 					if (_playerMics[i] != null)
 						_playerMics[i].SetActive(false);
-					if (_playerPhones[i] != null)
-						_playerPhones[i].SetActive(false);
 					continue;
 				}
 
@@ -222,8 +176,6 @@ namespace MonkePhone.Behaviours.Apps
 					_playerRefs[i] = null;
 					if (_playerMics[i] != null)
 						_playerMics[i].SetActive(false);
-					if (_playerPhones[i] != null)
-						_playerPhones[i].SetActive(false);
 					continue;
 				}
 
@@ -253,23 +205,7 @@ namespace MonkePhone.Behaviours.Apps
 				return;
 			}
 
-			Material material = null;
-			Color color = Color.white;
-
-			if (rig.setMatIndex == 0)
-			{
-				material = rig.scoreboardMaterial;
-				color = rig.playerColor;
-			}
-			else if (rig.setMatIndex > 0 && rig.materialsToChangeTo != null && rig.setMatIndex < rig.materialsToChangeTo.Length)
-			{
-				material = rig.materialsToChangeTo[rig.setMatIndex];
-				if (material != null)
-					color = material.color;
-			}
-
-			if (color.a < 0.1f)
-				color.a = 1f;
+			PlayerColorPatch.GetPlayerColorAndMaterial(rig, out Color color, out Material material);
 
 			if (swatch.material != material)
 				swatch.material = material;
