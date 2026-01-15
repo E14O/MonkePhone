@@ -48,12 +48,27 @@
             "emoji" : "<:spankypluh:1459994043025981666>"
         }
     ],
-    "songs" : [
+    "songs" : 
+    [
         {
-            "title" : "SongTitle",
-            "coverUrl" : "SongCover",
-            "fileName" : "SongName.mp3",
-            "fileDownloadUrl" : "SongLink.mp3"
+            "title" : "SkellonYapV1",
+            "coverUrl" : "",
+            "fileName" : "SkellonYap1.mp3",
+            "fileDownloadUrl" : "https://github.com/E14O/MonkePhone/blob/main/DownloadableFiles/SkellonYap1.ogg"
+
+            
+        },
+        {
+            "title" : "SkellonYapV2",
+            "coverUrl" : "",
+            "fileName" : "SkellonYap2.mp3",
+            "fileDownloadUrl" : "https://github.com/E14O/MonkePhone/blob/main/DownloadableFiles/SkellonYap2.ogg"
+        },
+        {
+            "title" : "SkellonYapV3",
+            "coverUrl" : "",
+            "fileName" : "SkellonYap3.mp3",
+            "fileDownloadUrl" : "https://github.com/E14O/MonkePhone/blob/main/DownloadableFiles/SkellonYap3.ogg"
         }
     ]
   }
