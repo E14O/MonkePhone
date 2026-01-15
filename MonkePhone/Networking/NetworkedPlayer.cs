@@ -37,7 +37,7 @@ namespace MonkePhone.Networking
 
         public bool Flipped;
 
-        public GameObject Phone;
+        public GameObject Phone, _MonkeGramApp;
         private MeshRenderer _meshRenderer;
 
         // Camera
@@ -133,14 +133,14 @@ namespace MonkePhone.Networking
                 _camera = Phone.transform.Find("Canvas/MonkeGramApp/cam").GetComponent<Camera>();
                 _camera.targetTexture = _renderTexture;
                 _camera.cullingMask = 1224081207;
-                _camera.gameObject.SetActive(true);
 
                 // update our background
                 _background.material = new(_background.material)
                 {
                     mainTexture = _renderTexture
                 };
-                _background.gameObject.SetActive(true);
+                GetDummyApp("MonkeGramApp", false);
+                
             }
             catch (Exception ex)
             {
@@ -189,6 +189,8 @@ namespace MonkePhone.Networking
                 Logging.Error($"Error when updating network-content for camera of {Rig.Creator.NickName}: {ex}");
             }
         }
+
+        public void GetDummyApp(string _appId, bool _isEnabled) => Phone.transform.Find($"Canvas/{_appId}").gameObject.SetActive(_isEnabled);
 
         public void OnColourChanged(Color colour)
         {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using MonkePhone.Extensions;
 using MonkePhone.Patches;
+using MonkePhone.Tools;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +34,7 @@ namespace MonkePhone.Behaviours.Apps
 			_roomIdText = transform.Find("Roominfo").GetComponent<Text>();
 			_roomNotice = transform.Find("Notice").GetComponent<Text>();
 			_templateLine = transform.Find("Grid/Person (1)").gameObject;
+
 			_templateLine.SetActive(false);
 
 			_playerNameTexts.Clear();
@@ -40,9 +43,11 @@ namespace MonkePhone.Behaviours.Apps
 			_playerMics.Clear();
 			_playerRefs.Clear();
 
+			Transform _grid = transform.Find("Grid");
+
 			for (int i = 0; i < MaxPlayers; i++)
 			{
-				GameObject line = i == 0 ? _templateLine : Instantiate(_templateLine, transform.Find("Grid"));
+				GameObject line = i == 0 ? _templateLine : Instantiate(_templateLine, _grid);
 
 				line.name = $"Person ({i + 1})";
 				line.SetActive(false);
@@ -50,6 +55,7 @@ namespace MonkePhone.Behaviours.Apps
 				_playerLines.Add(line);
 				_playerNameTexts.Add(line.transform.Find("Name").GetComponent<Text>());
 				_playerSwatches.Add(line.transform.Find("Swatch").GetComponent<Image>());
+
 
 				Transform micTransform = line.transform.Find("Mic");
 				_playerMics.Add(micTransform != null ? micTransform.gameObject : null);
@@ -99,12 +105,7 @@ namespace MonkePhone.Behaviours.Apps
 		{
 			for (int i = 0; i < _playerLines.Count; i++)
 			{
-				if (!_playerLines[i].activeSelf || _playerRefs[i] == null)
-					continue;
-
 				NetPlayer player = _playerRefs[i];
-				if (player == null || player.IsNull)
-					continue;
 
 				if (GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig))
 				{
@@ -117,13 +118,6 @@ namespace MonkePhone.Behaviours.Apps
 		{
 			for (int i = 0; i < _playerLines.Count; i++)
 			{
-				if (!_playerLines[i].activeSelf || _playerMics[i] == null || _playerRefs[i] == null)
-				{
-					if (_playerMics[i] != null)
-						_playerMics[i].SetActive(false);
-					continue;
-				}
-
 				NetPlayer player = _playerRefs[i];
 				if (player == null || player.IsNull)
 				{
@@ -131,8 +125,7 @@ namespace MonkePhone.Behaviours.Apps
 					continue;
 				}
 
-				bool isTalking = player.IsTalking();
-				_playerMics[i].SetActive(isTalking);
+				_playerMics[i].SetActive(player.IsTalking());
 			}
 		}
 
@@ -146,8 +139,6 @@ namespace MonkePhone.Behaviours.Apps
 				{
 					_playerLines[i].SetActive(false);
 					_playerRefs[i] = null;
-					if (_playerMics[i] != null)
-						_playerMics[i].SetActive(false);
 				}
 
 				_roomNotice.gameObject.SetActive(true);
@@ -164,8 +155,6 @@ namespace MonkePhone.Behaviours.Apps
 				{
 					_playerLines[i].SetActive(false);
 					_playerRefs[i] = null;
-					if (_playerMics[i] != null)
-						_playerMics[i].SetActive(false);
 					continue;
 				}
 
@@ -174,8 +163,6 @@ namespace MonkePhone.Behaviours.Apps
 				{
 					_playerLines[i].SetActive(false);
 					_playerRefs[i] = null;
-					if (_playerMics[i] != null)
-						_playerMics[i].SetActive(false);
 					continue;
 				}
 
@@ -187,34 +174,25 @@ namespace MonkePhone.Behaviours.Apps
 				GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
 
 				_playerNameTexts[i].text = player.GetName();
-				_playerNameTexts[i].color = rig != null ? rig.playerText1.color : Color.white;
+				_playerNameTexts[i].color = rig != null ? rig.playerText1.color : UnityEngine.Color.white;
 
 				SetSwatchColour(_playerSwatches[i], rig);
 			}
 		}
 
-		private void SetSwatchColour(Image swatch, VRRig rig)
-		{
-			if (swatch == null)
-				return;
+        private void SetSwatchColour(Image swatch, VRRig rig)
+        {
+            if (swatch == null)
+                return;
 
-			if (rig == null)
-			{
-				swatch.material = null;
-				swatch.color = Color.white;
-				return;
-			}
+            if (swatch.material != rig.scoreboardMaterial)
+                swatch.material = rig.scoreboardMaterial;
 
-			PlayerColorPatch.GetPlayerColorAndMaterial(rig, out Color color, out Material material);
+            if (swatch.color != rig.playerColor)
+                swatch.color = rig.playerColor;
+        }
 
-			if (swatch.material != material)
-				swatch.material = material;
-
-			if (swatch.color != color)
-				swatch.color = color;
-		}
-
-		private void JoinedRoomEvent() => RefreshApp();
+        private void JoinedRoomEvent() => RefreshApp();
 
 		private void LeftRoomEvent() => RefreshApp();
 
