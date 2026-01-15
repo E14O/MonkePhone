@@ -120,7 +120,6 @@ namespace MonkePhone.Networking
             try
             {
                 // get the background for the phone that will display our unique photo
-
                 // make it be monkegram app but u keep the background stuff same cause if not it break background camera thing;
                 _background = Phone.transform.Find("Canvas/MonkeGramApp/Background").GetComponent<RawImage>();
 

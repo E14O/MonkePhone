@@ -24,7 +24,7 @@ namespace MonkePhone.Behaviours.Apps
 
         public Image _galleryPhoto;
         public Text _galleryText, _gallerySelection, _galleryWarning;
-        private GameObject _deleteButton, _uploadButton, thumbnailButton;
+        private GameObject _deleteButton, _uploadButton, _thumbnailButton;
 
         public List<Photo> RelativePhotos = [];
 
@@ -36,7 +36,7 @@ namespace MonkePhone.Behaviours.Apps
             _galleryWarning = transform.Find("Header (1)").GetComponent<Text>();
             _deleteButton = transform.Find("Photos Trash").gameObject;
             _uploadButton = transform.Find("Photos Post").gameObject;
-            thumbnailButton = transform.Find("SetThumbnail").gameObject;
+            _thumbnailButton = transform.Find("SetThumbnail").gameObject;
         }
 
         public override void AppOpened()
@@ -147,14 +147,14 @@ namespace MonkePhone.Behaviours.Apps
                     _gallerySelection.text = "";
                     _deleteButton.SetActive(false);
                     _uploadButton.SetActive(false);
-                    thumbnailButton.SetActive(false);
+                    _thumbnailButton.SetActive(false);
                     return;
                 }
 
                 _currentPhoto = MathEx.Wrap(_currentPhoto, 0, _photoComparison.Count);
 
                 _deleteButton.SetActive(true);
-                thumbnailButton.SetActive(true);
+                _thumbnailButton.SetActive(true);
 
                 var tex = new Texture2D(2, 2);
                 tex.LoadImage(File.ReadAllBytes(Path.Combine(PhoneManager.Instance.PhotosPath, _photoComparison.ElementAt(_currentPhoto).Value)));
