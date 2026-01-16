@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using MonkePhone.Extensions;
-using MonkePhone.Patches;
 using MonkePhone.Tools;
 using Photon.Pun;
 using UnityEngine;
@@ -180,19 +179,32 @@ namespace MonkePhone.Behaviours.Apps
 			}
 		}
 
-        private void SetSwatchColour(Image swatch, VRRig rig)
-        {
-            if (swatch == null)
-                return;
+		private void SetSwatchColour(Image swatch, VRRig rig)
+		{
+			if (swatch == null || rig == null)
+			{
+				if (swatch != null)
+				{
+					swatch.material = null;
+					swatch.color = UnityEngine.Color.white;
+				}
+				return;
+			}
 
-            if (swatch.material != rig.scoreboardMaterial)
-                swatch.material = rig.scoreboardMaterial;
+			int index = rig.setMatIndex;
+			Material material = (index > 0 && rig.materialsToChangeTo != null && index < rig.materialsToChangeTo.Length)
+				? rig.materialsToChangeTo[index]
+				: rig.scoreboardMaterial;
 
-            if (swatch.color != rig.playerColor)
-                swatch.color = rig.playerColor;
-        }
+			UnityEngine.Color color = (index == 0) ? rig.playerColor : (material != null ? material.color : rig.playerColor);
 
-        private void JoinedRoomEvent() => RefreshApp();
+			if (color.a < 0.1f) color.a = 1f;
+
+			swatch.material = material;
+			swatch.color = color;
+		}
+
+		private void JoinedRoomEvent() => RefreshApp();
 
 		private void LeftRoomEvent() => RefreshApp();
 
