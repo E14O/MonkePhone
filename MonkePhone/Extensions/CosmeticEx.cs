@@ -1,5 +1,6 @@
 ﻿using GorillaNetworking;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonkePhone.Extensions
 {
@@ -10,15 +11,14 @@ namespace MonkePhone.Extensions
 			public string CosmeticId { get; set; }
 			public string DisplayName { get; set; }
 		}
-		// ima be real idk if this works 
+		// yea i still dont know if this gonna help me or not
 		public static readonly List<CosmeticInfo> KnownCosmetics = new List<CosmeticInfo>
 		{
 			new CosmeticInfo { CosmeticId = "LMAPY.", DisplayName = "FIRE STICK" },
 			new CosmeticInfo { CosmeticId = "LBADE.", DisplayName = "FINGER PAINTER" },
 			new CosmeticInfo { CosmeticId = "LBAGS.", DisplayName = "ILLUSTRATOR" },
-			
-		};
 
+		};
 		public static bool HasCosmetic(this VRRig rig, string cosmeticId)
 		{
 			if (rig == null || string.IsNullOrEmpty(cosmeticId))
@@ -26,6 +26,16 @@ namespace MonkePhone.Extensions
 
 			return rig.rawCosmeticString.Contains(cosmeticId);
 		}
+
+		public static bool HasFireStick(this VRRig rig) => rig.HasCosmetic("LMAPY.");
+
+		public static bool HasFingerPainter(this VRRig rig) => rig.HasCosmetic("LBADE.");
+
+		public static bool HasIllustrator(this VRRig rig) => rig.HasCosmetic("LBAGS.");
+
+		public static bool HasAdmin(this VRRig rig) => rig.HasCosmetic("LBAAD.");
+
+		public static bool HasGT1(this VRRig rig) => rig.HasCosmetic("LBAAZ.");
 
 		public static List<CosmeticInfo> GetPlayerCosmetics(this VRRig rig)
 		{
@@ -43,6 +53,24 @@ namespace MonkePhone.Extensions
 			}
 
 			return playerCosmetics;
+		}
+
+		public static bool HasAnyCosmetic(this VRRig rig)
+		{
+			return rig.GetPlayerCosmetics().Count > 0;
+		}
+
+		public static bool HasAllCosmetics(this VRRig rig)
+		{
+			return rig.GetPlayerCosmetics().Count == KnownCosmetics.Count;
+		}
+
+		public static string GetCosmeticString(this VRRig rig)
+		{
+			if (rig == null)
+				return string.Empty;
+
+			return rig.rawCosmeticString;
 		}
 	}
 }
