@@ -33,9 +33,7 @@ namespace MonkePhone.Extensions
 
 		public static bool HasIllustrator(this VRRig rig) => rig.HasCosmetic("LBAGS.");
 
-		public static bool HasAdmin(this VRRig rig) => rig.HasCosmetic("LBAAD.");
-
-		public static bool HasGT1(this VRRig rig) => rig.HasCosmetic("LBAAZ.");
+		
 
 		public static List<CosmeticInfo> GetPlayerCosmetics(this VRRig rig)
 		{
