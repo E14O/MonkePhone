@@ -193,13 +193,11 @@ namespace MonkePhone.Networking
 
                 case true when properties.ContainsKey("PhoneLockScreen"):
                     CloseDummyPhone();
-                    GetDummyApp("Home Screen", false);
                     GetDummyApp("Lock Screen", true);
                     break;
 
                 case true when properties.ContainsKey("PhoneHomeScreen"):
                     CloseDummyPhone();
-                    GetDummyApp("Lock Screen", false);
                     GetDummyApp("Home Screen", true);
                     break;
 

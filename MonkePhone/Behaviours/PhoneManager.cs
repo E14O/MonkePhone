@@ -447,6 +447,7 @@ namespace MonkePhone.Behaviours
 
             app.gameObject.SetActive(true);
             app.AppOpened();
+            NetworkHandler.Instance.RemoveProperty("PhoneHomeScreen");
             NetworkHandler.Instance.SetProperty(appId, null);
         }
 
@@ -470,7 +471,7 @@ namespace MonkePhone.Behaviours
                 _homeMenuObject.SetActive(InHomeScreen);
             }
             NetworkHandler.Instance.RemoveProperty(appId);
-            NetworkHandler.Instance.SetProperty("PhoneHomeScreen", null);
+            NetworkHandler.Instance.SetProperty("PhoneHomeScreen", true);
         }
 
         public bool AppOpened(string appId) => AppOpened(GetApp(appId));
@@ -525,7 +526,7 @@ namespace MonkePhone.Behaviours
                 _homeMenuObject.SetActive(false);
 
                 NetworkHandler.Instance.RemoveProperty("PhoneHomeScreen");
-                NetworkHandler.Instance.SetProperty("PhoneLockScreen", null);
+                NetworkHandler.Instance.SetProperty("PhoneLockScreen", true);
             }
             else if (_LockScreenObject.activeSelf)
             {
@@ -533,7 +534,7 @@ namespace MonkePhone.Behaviours
                 _homeMenuObject.SetActive(true);
 
                 NetworkHandler.Instance.RemoveProperty("PhoneLockScreen");
-                NetworkHandler.Instance.SetProperty("PhoneHomeScreen", null);
+                NetworkHandler.Instance.SetProperty("PhoneHomeScreen", true);
             }
 
             _openedApps.ForEach(app => CloseApp_Local(app.AppId, false));
@@ -564,7 +565,7 @@ namespace MonkePhone.Behaviours
                 _LockScreenObject.SetActive(true);
 
                 NetworkHandler.Instance.RemoveProperty("PhoneOff");
-                NetworkHandler.Instance.SetProperty("PhoneOn", null);
+                NetworkHandler.Instance.SetProperty("PhoneOn", true);
             }
             else
             {
@@ -573,7 +574,7 @@ namespace MonkePhone.Behaviours
                 _LockScreenObject.SetActive(false);
 
                 NetworkHandler.Instance.RemoveProperty("PhoneOn", "PhoneLockScreen", "PhoneHomeScreen");
-                NetworkHandler.Instance.SetProperty("PhoneOff", null);
+                NetworkHandler.Instance.SetProperty("PhoneOff", true);
             }
 
             _homeMenuObject.SetActive(IsPowered && InHomeScreen && !IsOutdated && !_LockScreenObject.activeSelf);
