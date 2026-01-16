@@ -8,6 +8,7 @@ using MonkePhone.Behaviours.Apps;
 using MonkePhone.Extensions;
 using MonkePhone.Interfaces;
 using MonkePhone.Models;
+using MonkePhone.Networking;
 using MonkePhone.Tools;
 using MonkePhone.Utilities;
 using UnityEngine;
@@ -39,8 +40,6 @@ namespace MonkePhone.Behaviours
 
         private GameObject _homeMenuObject, _outdatedMenuObject, _LockScreenObject, _TopBarObject, _genericWallpaperHS, _genericWallpaperLS;
         private RawImage _customWallpaperHS, _customWallpaperLS;
-
-        private Text _TimeText, _DateText, _TimeTextTB;
 
         public async void Awake()
         {
@@ -448,6 +447,7 @@ namespace MonkePhone.Behaviours
 
             app.gameObject.SetActive(true);
             app.AppOpened();
+            NetworkHandler.Instance.SetProperty(appId, null);
         }
 
         public void CloseApp(string appId) => CloseApp_Local(appId, true);
@@ -469,6 +469,8 @@ namespace MonkePhone.Behaviours
                 _openedApps.Remove(app);
                 _homeMenuObject.SetActive(InHomeScreen);
             }
+            NetworkHandler.Instance.RemoveProperty(appId);
+            NetworkHandler.Instance.SetProperty("PhoneHomeScreen", null);
         }
 
         public bool AppOpened(string appId) => AppOpened(GetApp(appId));
@@ -521,11 +523,17 @@ namespace MonkePhone.Behaviours
             {
                 _LockScreenObject.SetActive(true);
                 _homeMenuObject.SetActive(false);
+
+                NetworkHandler.Instance.RemoveProperty("PhoneHomeScreen");
+                NetworkHandler.Instance.SetProperty("PhoneLockScreen", null);
             }
             else if (_LockScreenObject.activeSelf)
             {
                 _LockScreenObject.SetActive(false);
                 _homeMenuObject.SetActive(true);
+
+                NetworkHandler.Instance.RemoveProperty("PhoneLockScreen");
+                NetworkHandler.Instance.SetProperty("PhoneHomeScreen", null);
             }
 
             _openedApps.ForEach(app => CloseApp_Local(app.AppId, false));
@@ -554,12 +562,18 @@ namespace MonkePhone.Behaviours
             {
                 _TopBarObject.SetActive(true);
                 _LockScreenObject.SetActive(true);
+
+                NetworkHandler.Instance.RemoveProperty("PhoneOff");
+                NetworkHandler.Instance.SetProperty("PhoneOn", null);
             }
             else
             {
                 _TopBarObject.SetActive(false);
                 _homeMenuObject.SetActive(false);
                 _LockScreenObject.SetActive(false);
+
+                NetworkHandler.Instance.RemoveProperty("PhoneOn", "PhoneLockScreen", "PhoneHomeScreen");
+                NetworkHandler.Instance.SetProperty("PhoneOff", null);
             }
 
             _homeMenuObject.SetActive(IsPowered && InHomeScreen && !IsOutdated && !_LockScreenObject.activeSelf);
@@ -568,6 +582,7 @@ namespace MonkePhone.Behaviours
             foreach (PhoneApp app in _openedApps)
             {
                 app.gameObject.SetActive(false);
+                NetworkHandler.Instance.RemoveProperty(app.AppId);
             }
 
             PlaySound(IsPowered ? "PadShow" : "PadHide", 0.4f);

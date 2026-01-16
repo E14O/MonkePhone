@@ -72,6 +72,17 @@ namespace MonkePhone.Networking
             set_properties = true;
         }
 
+        public void RemoveProperty(params string[] key)
+        {
+            foreach (string NetKey in key)
+            {
+                if (properties.ContainsKey(NetKey))
+                    properties.Remove(NetKey);
+
+                Logging.Log($"Removed network key - {NetKey}");
+            }
+        }
+
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             NetPlayer netPlayer = NetworkSystem.Instance.GetPlayer(targetPlayer.ActorNumber);

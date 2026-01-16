@@ -6,6 +6,7 @@ using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -77,7 +78,7 @@ namespace MonkePhone.Networking
 
                 if (Phone is null)
                 {
-                    createPhoneTask ??= CreateMonkePhone();
+                    createPhoneTask ??= CreateMonkePhone(properties);
                     await createPhoneTask;
                 }
 
@@ -96,6 +97,20 @@ namespace MonkePhone.Networking
                     Flipped = flip;
                 }
 
+                if (properties.TryGetValue("Version", out object value))
+                {
+                    if (value.ToString() == "1.0.5")
+                    {
+                        // devs version keep it on camera app
+                        GetDummyApp("MonkeGramApp", true);
+                    }
+                    else if(value.ToString() == Constants.Version)
+                    {
+                        // our version enable custom networking
+                        CloseDummyPhone();
+                        ScreenNetworking(properties);
+                    }
+                }
                 ConfigurePhone();
             }
         }
@@ -108,7 +123,7 @@ namespace MonkePhone.Networking
             Phone.SetActive(!isInvisible);
         }
 
-        public async Task CreateMonkePhone()
+        public async Task CreateMonkePhone(Dictionary<string, object> properties)
         {
             Phone = Instantiate(await AssetLoader.LoadAsset<GameObject>(Constants.NetPhoneName));
             Phone.SetActive(!Rig.IsInvisibleToLocalPlayer);
@@ -138,8 +153,21 @@ namespace MonkePhone.Networking
                 {
                     mainTexture = _renderTexture
                 };
-                GetDummyApp("MonkeGramApp", false);
-                
+
+                if (properties.TryGetValue("Version", out object value))
+                {
+                    if (value.ToString() == "1.0.5")
+                    {
+                        // devs version keep it on camera app
+                        GetDummyApp("MonkeGramApp", true);
+                    }
+                    else if(value.ToString() == Constants.Version)
+                    {
+                        // our version so enable custom networking
+                        CloseDummyPhone();
+                        ScreenNetworking(properties);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -148,6 +176,68 @@ namespace MonkePhone.Networking
 
             OnColourChanged(Rig.playerColor);
             Rig.OnColorChanged += OnColourChanged;
+        }
+
+        public void ScreenNetworking(Dictionary<string, object> properties)
+        {
+            switch (true)
+            {
+                case true when properties.ContainsKey("PhoneOn"):
+                    CloseDummyPhone();
+                    GetDummyApp("Lock Screen", true);
+                    break;
+
+                case true when properties.ContainsKey("PhoneOff"):
+                    CloseDummyPhone();
+                    break;
+
+                case true when properties.ContainsKey("PhoneLockScreen"):
+                    CloseDummyPhone();
+                    GetDummyApp("Home Screen", false);
+                    GetDummyApp("Lock Screen", true);
+                    break;
+
+                case true when properties.ContainsKey("PhoneHomeScreen"):
+                    CloseDummyPhone();
+                    GetDummyApp("Lock Screen", false);
+                    GetDummyApp("Home Screen", true);
+                    break;
+
+                case true when properties.ContainsKey("Music"):
+                    CloseDummyPhone();
+                    GetDummyApp("MusicApp", true);
+                    break;
+
+                case true when properties.ContainsKey("Scoreboard"):
+                    CloseDummyPhone();
+                    GetDummyApp("ScoreboardApp", true);
+                    break;
+
+                case true when properties.ContainsKey("Gallery"):
+                    CloseDummyPhone();
+                    GetDummyApp("GalleryApp", true);
+                    break;
+
+                case true when properties.ContainsKey("MonkeGram"):
+                    CloseDummyPhone();
+                    GetDummyApp("MonkeGramApp", true);
+                    break;
+
+                case true when properties.ContainsKey("Messaging"):
+                    CloseDummyPhone();
+                    GetDummyApp("MessagingApp", true);
+                    break;
+
+                case true when properties.ContainsKey("Configuration"):
+                    CloseDummyPhone();
+                    GetDummyApp("ConfigurationApp", true);
+                    break;
+
+                case true when properties.ContainsKey("Credits"):
+                    CloseDummyPhone();
+                    GetDummyApp("CreditsApp", true);
+                    break;
+            }
         }
 
         public void ConfigurePhone()
@@ -190,6 +280,15 @@ namespace MonkePhone.Networking
         }
 
         public void GetDummyApp(string _appId, bool _isEnabled) => Phone.transform.Find($"Canvas/{_appId}").gameObject.SetActive(_isEnabled);
+
+        public void CloseDummyPhone()
+        {
+            Transform _canvasObject = Phone.transform.Find("Canvas");
+            foreach (Transform _transformChildren in _canvasObject)
+            {
+                _transformChildren.gameObject.SetActive(false);
+            }
+        }
 
         public void OnColourChanged(Color colour)
         {

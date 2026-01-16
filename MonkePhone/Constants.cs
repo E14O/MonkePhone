@@ -18,9 +18,9 @@ namespace MonkePhone
         public const string Name = "MonkePhone";
 
         /// <summary>
-        /// The version of the plugin (formatted into <see cref="System.Version"/>)
+        /// The version of the plugin
         /// </summary>
-        public const string Version = "1.0.5";
+        public const string Version = "1.0.6";
 
         // Assets
 
