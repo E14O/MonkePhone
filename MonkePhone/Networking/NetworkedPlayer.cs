@@ -1,13 +1,13 @@
-﻿using MonkePhone.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MonkePhone.Behaviours;
+using MonkePhone.Interfaces;
 using MonkePhone.Models;
 using MonkePhone.Patches;
 using MonkePhone.Tools;
 using Photon.Realtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +16,8 @@ namespace MonkePhone.Networking
     [RequireComponent(typeof(VRRig)), DisallowMultipleComponent]
     public class NetworkedPlayer : MonoBehaviour, IPhoneAnimation
     {
+        public static volatile NetworkedPlayer Instance;
+
         public NetPlayer Owner;
 
         public VRRig Rig;
@@ -101,16 +103,16 @@ namespace MonkePhone.Networking
                 {
                     if (value.ToString() == "1.0.5")
                     {
-                        // devs version keep it on camera app
-                        GetDummyApp("MonkeGramApp", true);
+                        DummyPhoneManager.Instance.OpenDummyApp("MonkeGramApp");
                     }
-                    else if(value.ToString() == Constants.Version)
+                    else if (value.ToString() == Constants.Version)
                     {
                         // our version enable custom networking
-                        CloseDummyPhone();
+                        DummyPhoneManager.Instance.CloseDummyApps();
                         ScreenNetworking(properties);
                     }
                 }
+
                 ConfigurePhone();
             }
         }
@@ -134,21 +136,16 @@ namespace MonkePhone.Networking
 
             try
             {
-                // get the background for the phone that will display our unique photo
-                // make it be monkegram app but u keep the background stuff same cause if not it break background camera thing;
                 _background = Phone.transform.Find("Canvas/MonkeGramApp/Background").GetComponent<RawImage>();
 
-                // make our new unique photo
                 RenderTexture baseRT = (RenderTexture)_background.material.mainTexture;
                 _renderTexture = new RenderTexture(baseRT);
                 _renderTexture.filterMode = FilterMode.Point;
 
-                // update our camera
                 _camera = Phone.transform.Find("Canvas/MonkeGramApp/cam").GetComponent<Camera>();
                 _camera.targetTexture = _renderTexture;
                 _camera.cullingMask = 1224081207;
 
-                // update our background
                 _background.material = new(_background.material)
                 {
                     mainTexture = _renderTexture
@@ -158,13 +155,12 @@ namespace MonkePhone.Networking
                 {
                     if (value.ToString() == "1.0.5")
                     {
-                        // devs version keep it on camera app
-                        GetDummyApp("MonkeGramApp", true);
+                        DummyPhoneManager.Instance.OpenDummyApp("MonkeGramApp");
                     }
-                    else if(value.ToString() == Constants.Version)
+                    else if (value.ToString() == Constants.Version)
                     {
                         // our version so enable custom networking
-                        CloseDummyPhone();
+                        DummyPhoneManager.Instance.CloseDummyApps();
                         ScreenNetworking(properties);
                     }
                 }
@@ -180,62 +176,9 @@ namespace MonkePhone.Networking
 
         public void ScreenNetworking(Dictionary<string, object> properties)
         {
-            switch (true)
-            {
-                case true when properties.ContainsKey("PhoneOn"):
-                    CloseDummyPhone();
-                    GetDummyApp("Lock Screen", true);
-                    break;
+            if (!properties.TryGetValue("DummyApp", out object appId)) return;
 
-                case true when properties.ContainsKey("PhoneOff"):
-                    CloseDummyPhone();
-                    break;
-
-                case true when properties.ContainsKey("PhoneLockScreen"):
-                    CloseDummyPhone();
-                    GetDummyApp("Lock Screen", true);
-                    break;
-
-                case true when properties.ContainsKey("PhoneHomeScreen"):
-                    CloseDummyPhone();
-                    GetDummyApp("Home Screen", true);
-                    break;
-
-                case true when properties.ContainsKey("Music"):
-                    CloseDummyPhone();
-                    GetDummyApp("MusicApp", true);
-                    break;
-
-                case true when properties.ContainsKey("Scoreboard"):
-                    CloseDummyPhone();
-                    GetDummyApp("ScoreboardApp", true);
-                    break;
-
-                case true when properties.ContainsKey("Gallery"):
-                    CloseDummyPhone();
-                    GetDummyApp("GalleryApp", true);
-                    break;
-
-                case true when properties.ContainsKey("MonkeGram"):
-                    CloseDummyPhone();
-                    GetDummyApp("MonkeGramApp", true);
-                    break;
-
-                case true when properties.ContainsKey("Messaging"):
-                    CloseDummyPhone();
-                    GetDummyApp("MessagingApp", true);
-                    break;
-
-                case true when properties.ContainsKey("Configuration"):
-                    CloseDummyPhone();
-                    GetDummyApp("ConfigurationApp", true);
-                    break;
-
-                case true when properties.ContainsKey("Credits"):
-                    CloseDummyPhone();
-                    GetDummyApp("CreditsApp", true);
-                    break;
-            }
+            DummyPhoneManager.Instance.OpenDummyApp(appId as string);
         }
 
         public void ConfigurePhone()
@@ -274,17 +217,6 @@ namespace MonkePhone.Networking
             catch (Exception ex)
             {
                 Logging.Error($"Error when updating network-content for camera of {Rig.Creator.NickName}: {ex}");
-            }
-        }
-
-        public void GetDummyApp(string _appId, bool _isEnabled) => Phone.transform.Find($"Canvas/{_appId}").gameObject.SetActive(_isEnabled);
-
-        public void CloseDummyPhone()
-        {
-            Transform _canvasObject = Phone.transform.Find("Canvas");
-            foreach (Transform _transformChildren in _canvasObject)
-            {
-                _transformChildren.gameObject.SetActive(false);
             }
         }
 

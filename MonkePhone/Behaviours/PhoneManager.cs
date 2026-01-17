@@ -447,8 +447,9 @@ namespace MonkePhone.Behaviours
 
             app.gameObject.SetActive(true);
             app.AppOpened();
+
             NetworkHandler.Instance.RemoveProperty("PhoneHomeScreen");
-            NetworkHandler.Instance.SetProperty(appId, null);
+            NetworkHandler.Instance.SetProperty("DummyApp", appId);
         }
 
         public void CloseApp(string appId) => CloseApp_Local(appId, true);
@@ -470,8 +471,8 @@ namespace MonkePhone.Behaviours
                 _openedApps.Remove(app);
                 _homeMenuObject.SetActive(InHomeScreen);
             }
-            NetworkHandler.Instance.RemoveProperty(appId);
-            NetworkHandler.Instance.SetProperty("PhoneHomeScreen", true);
+
+            NetworkHandler.Instance.SetProperty("DummyApp", "Home Screen");
         }
 
         public bool AppOpened(string appId) => AppOpened(GetApp(appId));

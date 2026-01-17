@@ -6,12 +6,16 @@ namespace MonkePhone.Extensions
 {
 	public static class CosmeticEx
 	{
+		// TODO: As I feel like this classes content would be more suited in the PlayerEx class, We should move the content in there some other time.
+
 		public class CosmeticInfo
 		{
 			public string CosmeticId { get; set; }
 			public string DisplayName { get; set; }
 		}
+
 		// yea i still dont know if this gonna help me or not
+
 		public static readonly List<CosmeticInfo> KnownCosmetics = new List<CosmeticInfo>
 		{
 			new CosmeticInfo { CosmeticId = "LMAPY.", DisplayName = "FIRE STICK" },
@@ -32,8 +36,6 @@ namespace MonkePhone.Extensions
 		public static bool HasFingerPainter(this VRRig rig) => rig.HasCosmetic("LBADE.");
 
 		public static bool HasIllustrator(this VRRig rig) => rig.HasCosmetic("LBAGS.");
-
-		
 
 		public static List<CosmeticInfo> GetPlayerCosmetics(this VRRig rig)
 		{
