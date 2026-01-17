@@ -40,6 +40,8 @@ namespace MonkePhone.Networking
 
         public float Zoom;
 
+        public float _ownerTimeOffset;
+
         public bool Flipped;
 
         public GameObject Phone, _MonkeGramApp;
@@ -50,12 +52,18 @@ namespace MonkePhone.Networking
         private RawImage _background;
         private Camera _camera;
 
+        // Time
+        private Text _topBarText, _lockScreenText, _lockScreenDateText;
+
         private Task createPhoneTask;
 
         public void Start()
         {
             NetworkHandler.Instance.OnPlayerPropertyChanged += OnPlayerPropertyChanged;
             RigLocalInvisiblityPatch.OnSetInvisibleToLocalPlayer += OnLocalInvisibilityChanged;
+
+            float _UTCOffest = (float)TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow).TotalMinutes;
+            NetworkHandler.Instance.SetProperty("PhoneTimeOffset", _UTCOffest);
 
             if (!HasMonkePhone && Owner is PunNetPlayer punPlayer && punPlayer.PlayerRef is Player playerRef)
                 NetworkHandler.Instance.OnPlayerPropertiesUpdate(playerRef, playerRef.CustomProperties);
@@ -99,6 +107,11 @@ namespace MonkePhone.Networking
                 if (properties.TryGetValue("Flip", out object objectForFlipped) && objectForFlipped is bool flip)
                 {
                     Flipped = flip;
+                }
+
+                if (properties.TryGetValue("PhoneTimeOffset", out object _timeoffset) && _timeoffset is float _offsetMins)
+                {
+                    _ownerTimeOffset = _offsetMins;
                 }
 
                 if (properties.TryGetValue("Version", out object value))
@@ -152,6 +165,10 @@ namespace MonkePhone.Networking
                 _camera = Phone.transform.Find("Canvas/MonkeGramApp/cam").GetComponent<Camera>();
                 _camera.targetTexture = _renderTexture;
                 _camera.cullingMask = 1224081207;
+
+                _lockScreenText = Phone.transform.Find("Canvas/Lock Screen/time").GetComponent<Text>();
+                _lockScreenDateText = Phone.transform.Find("Canvas/Lock Screen/day").GetComponent<Text>();
+                _topBarText = Phone.transform.Find("Canvas/Top Bar/Time Text").GetComponent<Text>();
 
                 _background.material = new(_background.material)
                 {
@@ -247,6 +264,12 @@ namespace MonkePhone.Networking
                 _camera.gameObject.SetActive(false);
                 _background.gameObject.SetActive(false);
             }
+
+            // set there local time networked. (HOPEFULLY THIS WORKS)
+            DateTime _theirLocalTime = DateTime.UtcNow.AddMinutes(_ownerTimeOffset);
+            _lockScreenText.text = _theirLocalTime.ToString("hh:mm tt");
+            _lockScreenDateText.text = _theirLocalTime.ToString("dddd, dd MMMM");
+            _topBarText.text = _theirLocalTime.ToString("hh:mm tt");
 
             _camera.nearClipPlane = Constants.NearClipPlane * Rig.scaleFactor;
             _camera.farClipPlane = Camera.main.farClipPlane;
