@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MonkePhone.Behaviours.UI;
 using MonkePhone.Extensions;
 using Photon.Pun;
 using UnityEngine;
@@ -84,19 +85,38 @@ namespace MonkePhone.Behaviours.Apps
         {
             if (!PhotonNetwork.InRoom) return;
 
-            _micUpdateTimer += Time.deltaTime;
-
             if (_micUpdateTimer < MicUpdateInterval) return;
+
+            _micUpdateTimer += Time.deltaTime;
 
             _micUpdateTimer = 0f;
 
-            UpdateMicIndicators();
-            UpdateSwatches();
+            for (int i = 0; i < _playerLines.Count; i++)
+            {
+                NetPlayer player = _playerRefs[i];
+
+                if (GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig))
+                {
+                    SetSwatchColour(_playerSwatches[i], rig);
+                }
+            }
+
+            for (int i = 0; i < _playerLines.Count; i++)
+            {
+                NetPlayer player = _playerRefs[i];
+                if (player == null || player.IsNull)
+                {
+                    _playerMics[i].SetActive(false);
+                    continue;
+                }
+
+                _playerMics[i].SetActive(player.IsTalking());
+            }
         }
 
         private void RefreshApp()
         {
-            _roomIdText.text = PhotonNetwork.CurrentRoom.GetRoomInfo();
+            _roomIdText.text = PhotonNetwork.CurrentRoom.GetCurrentRoomInfo();
 
             if (!PhotonNetwork.InRoom || _playerLines.Count == 0)
             {
@@ -145,34 +165,30 @@ namespace MonkePhone.Behaviours.Apps
             }
         }
 
-        private void UpdateSwatches()
+        public override void ButtonClick(PhoneUIObject phoneUIObject, bool isLeftHand)
         {
-            for (int i = 0; i < _playerLines.Count; i++)
-            {
-                NetPlayer player = _playerRefs[i];
+            base.ButtonClick(phoneUIObject, isLeftHand);
 
-                if (GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig))
-                {
-                    SetSwatchColour(_playerSwatches[i], rig);
-                }
+            switch (phoneUIObject.name)
+            {
+                case "Mute":
+                    RefreshApp();
+                    break;
+
+                    /*case "Report":
+                        RefreshApp();
+                        break;
+
+                    case "Cheating":
+                         RefreshApp();
+                         break;*/
             }
         }
 
-        private void UpdateMicIndicators()
+        private void AssignReport(NetPlayer player)
         {
-            for (int i = 0; i < _playerLines.Count; i++)
-            {
-                NetPlayer player = _playerRefs[i];
-                if (player == null || player.IsNull)
-                {
-                    _playerMics[i].SetActive(false);
-                    continue;
-                }
-
-                _playerMics[i].SetActive(player.IsTalking());
-            }
+            //TODO: yk make this work
         }
-
 
         private void SetSwatchColour(Image swatch, VRRig rig)
         {

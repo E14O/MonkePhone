@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MonkePhone.Networking;
 using MonkePhone.Tools;
 using UnityEngine;
 
@@ -8,10 +7,14 @@ namespace MonkePhone.Behaviours
 {
     public class DummyPhoneManager : MonoBehaviour
     {
-        // right now its not working cause im pretty sure its to do with the canvas or something i have a idea on why its not working ask me tomorrow.
-        // also we should move all dummy phone stuff here to do with the pages yk like the flip zoom grab stuff. just look what i set up in the cs this way will be so much better.
-
         private readonly Dictionary<string, GameObject> _dummyApps = [];
+
+        private static readonly HashSet<string> Ignored =
+        [
+            "Lock Screen",
+            "Home Screen",
+            "Top Bar",
+        ];
 
         private Transform _canvas;
 
@@ -30,30 +33,30 @@ namespace MonkePhone.Behaviours
                 }
             }
         }
-
-        public void OpenDummyApp(string appId)
+        
+        public void OpenDummyApp(string _appId)
         {
             CloseDummyApps();
 
-            if (string.IsNullOrEmpty(appId)) return;
+            if (string.IsNullOrEmpty(_appId)) return;
 
-            string _appKey = appId;
+            string _appKey = _appId;
 
-            if (appId != "Lock Screen" && appId != "Home Screen" && appId != "MonkeGramApp")
-            {
-                _appKey = _appKey + "App";
-            }
+            if (!Ignored.Contains(_appId))
+                _appKey += "App";
 
             if (_dummyApps.TryGetValue(_appKey, out GameObject app))
             {
-                _canvas.transform.Find("Top Bar").gameObject.SetActive(true);
+                _canvas.Find("Top Bar")?.gameObject.SetActive(true);
+
                 app.SetActive(true);
             }
             else
             {
-                Logging.Warning($"Unable to open dummy app containing appId: {appId}");
+                Logging.Warning($"Unable to open dummy app containing phone appId: {_appId}");
             }
         }
+
 
         public void CloseDummyApps() => _dummyApps.Values.ToList().ForEach(app => app.SetActive(false));
     }

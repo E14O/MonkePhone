@@ -6,7 +6,7 @@ namespace MonkePhone.Extensions
 {
 	public static class RoomEx
 	{
-		public static string GetRoomId(this Room room)
+		public static string GetCurrentRoomId(this Room room)
 		{
 			if (room == null || !PhotonNetwork.InRoom)
 				return "Not In Room";
@@ -14,7 +14,7 @@ namespace MonkePhone.Extensions
 			return room.Name;
 		}
 
-		public static string GetGameMode(this Room room)
+		public static string GetCurrentGamemode(this Room room)
 		{
 			if (room == null || !PhotonNetwork.InRoom)
 				return "None";
@@ -58,12 +58,12 @@ namespace MonkePhone.Extensions
 			return room.MaxPlayers;
 		}
 
-		public static string GetRoomInfo(this Room room)
+		public static string GetCurrentRoomInfo(this Room room)
 		{
 			if (room == null || !PhotonNetwork.InRoom)
-				return "Room Id: Not In Room | GameMode: None";
+				return "Room Id: Not In Room Game Mode: None";
 
-			return $"Room Id: {room.GetRoomId()} | GameMode: {room.GetGameMode()}";
+			return $"Room Id: {room.GetCurrentRoomId()} | GameMode: {room.GetCurrentGamemode()}";
 		}
 	}
 }
