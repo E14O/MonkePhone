@@ -11,22 +11,23 @@ namespace MonkePhone.Behaviours
         // right now its not working cause im pretty sure its to do with the canvas or something i have a idea on why its not working ask me tomorrow.
         // also we should move all dummy phone stuff here to do with the pages yk like the flip zoom grab stuff. just look what i set up in the cs this way will be so much better.
 
-        public static volatile DummyPhoneManager Instance;
-
         private readonly Dictionary<string, GameObject> _dummyApps = [];
 
         private Transform _canvas;
 
-        private void Awake()
+        public void Initialize(GameObject phone)
         {
-            _canvas = NetworkedPlayer.Instance.Phone.transform.Find("Canvas");
+            _canvas = phone.transform.Find("Canvas");
 
             if (_canvas == null) return;
 
             foreach (Transform child in _canvas)
             {
-                _dummyApps[child.name] = child.gameObject;
-                child.gameObject.SetActive(false);
+                if (child.name != "Logo" && child.name != "X")
+                {
+                    _dummyApps[child.name] = child.gameObject;
+                    child.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -36,8 +37,16 @@ namespace MonkePhone.Behaviours
 
             if (string.IsNullOrEmpty(appId)) return;
 
-            if (_dummyApps.TryGetValue(appId, out GameObject app))
+            string _appKey = appId;
+
+            if (appId != "Lock Screen" && appId != "Home Screen" && appId != "MonkeGramApp")
             {
+                _appKey = _appKey + "App";
+            }
+
+            if (_dummyApps.TryGetValue(_appKey, out GameObject app))
+            {
+                _canvas.transform.Find("Top Bar").gameObject.SetActive(true);
                 app.SetActive(true);
             }
             else

@@ -448,7 +448,6 @@ namespace MonkePhone.Behaviours
             app.gameObject.SetActive(true);
             app.AppOpened();
 
-            NetworkHandler.Instance.RemoveProperty("PhoneHomeScreen");
             NetworkHandler.Instance.SetProperty("DummyApp", appId);
         }
 
@@ -526,16 +525,18 @@ namespace MonkePhone.Behaviours
                 _LockScreenObject.SetActive(true);
                 _homeMenuObject.SetActive(false);
 
-                NetworkHandler.Instance.RemoveProperty("PhoneHomeScreen");
-                NetworkHandler.Instance.SetProperty("PhoneLockScreen", true);
+                NetworkHandler.Instance.SetProperty("DummyApp", "Lock Screen");
             }
             else if (_LockScreenObject.activeSelf)
             {
                 _LockScreenObject.SetActive(false);
                 _homeMenuObject.SetActive(true);
 
-                NetworkHandler.Instance.RemoveProperty("PhoneLockScreen");
-                NetworkHandler.Instance.SetProperty("PhoneHomeScreen", true);
+                NetworkHandler.Instance.SetProperty("DummyApp", "Home Screen");
+            }
+            else
+            {
+                NetworkHandler.Instance.SetProperty("DummyApp", "Home Screen");
             }
 
             _openedApps.ForEach(app => CloseApp_Local(app.AppId, false));
@@ -565,8 +566,7 @@ namespace MonkePhone.Behaviours
                 _TopBarObject.SetActive(true);
                 _LockScreenObject.SetActive(true);
 
-                NetworkHandler.Instance.RemoveProperty("PhoneOff");
-                NetworkHandler.Instance.SetProperty("PhoneOn", true);
+                NetworkHandler.Instance.SetProperty("DummyApp", "Lock Screen");
             }
             else
             {
@@ -574,18 +574,14 @@ namespace MonkePhone.Behaviours
                 _homeMenuObject.SetActive(false);
                 _LockScreenObject.SetActive(false);
 
-                NetworkHandler.Instance.RemoveProperty("PhoneOn", "PhoneLockScreen", "PhoneHomeScreen");
-                NetworkHandler.Instance.SetProperty("PhoneOff", true);
+                NetworkHandler.Instance.SetProperty("DummyApp", "PhoneOff");
             }
 
             _homeMenuObject.SetActive(IsPowered && InHomeScreen && !IsOutdated && !_LockScreenObject.activeSelf);
             _outdatedMenuObject.SetActive(IsPowered && IsOutdated);
 
             foreach (PhoneApp app in _openedApps)
-            {
                 app.gameObject.SetActive(false);
-                NetworkHandler.Instance.RemoveProperty(app.AppId);
-            }
 
             PlaySound(IsPowered ? "PadShow" : "PadHide", 0.4f);
         }

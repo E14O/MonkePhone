@@ -18,6 +18,8 @@ namespace MonkePhone.Networking
     {
         public static volatile NetworkedPlayer Instance;
 
+        private DummyPhoneManager _dummyPhoneManager;
+
         public NetPlayer Owner;
 
         public VRRig Rig;
@@ -103,12 +105,13 @@ namespace MonkePhone.Networking
                 {
                     if (value.ToString() == "1.0.5")
                     {
-                        DummyPhoneManager.Instance.OpenDummyApp("MonkeGramApp");
+                        // devs version so keep it on the camera app4
+                        _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
                     }
                     else if (value.ToString() == Constants.Version)
                     {
                         // our version enable custom networking
-                        DummyPhoneManager.Instance.CloseDummyApps();
+                        _dummyPhoneManager.CloseDummyApps();
                         ScreenNetworking(properties);
                     }
                 }
@@ -128,6 +131,10 @@ namespace MonkePhone.Networking
         public async Task CreateMonkePhone(Dictionary<string, object> properties)
         {
             Phone = Instantiate(await AssetLoader.LoadAsset<GameObject>(Constants.NetPhoneName));
+
+            _dummyPhoneManager = Phone.AddComponent<DummyPhoneManager>();
+            _dummyPhoneManager.Initialize(Phone);
+
             Phone.SetActive(!Rig.IsInvisibleToLocalPlayer);
             Phone.transform.localEulerAngles = Vector3.zero;
 
@@ -155,12 +162,13 @@ namespace MonkePhone.Networking
                 {
                     if (value.ToString() == "1.0.5")
                     {
-                        DummyPhoneManager.Instance.OpenDummyApp("MonkeGramApp");
+                        // devs version so keep it on the camera app
+                        _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
                     }
                     else if (value.ToString() == Constants.Version)
                     {
                         // our version so enable custom networking
-                        DummyPhoneManager.Instance.CloseDummyApps();
+                        _dummyPhoneManager.CloseDummyApps();
                         ScreenNetworking(properties);
                     }
                 }
@@ -177,8 +185,7 @@ namespace MonkePhone.Networking
         public void ScreenNetworking(Dictionary<string, object> properties)
         {
             if (!properties.TryGetValue("DummyApp", out object appId)) return;
-
-            DummyPhoneManager.Instance.OpenDummyApp(appId as string);
+            _dummyPhoneManager.OpenDummyApp(appId as string);
         }
 
         public void ConfigurePhone()
