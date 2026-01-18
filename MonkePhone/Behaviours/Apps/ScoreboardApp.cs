@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using GorillaLocomotion;
 using MonkePhone.Behaviours.UI;
 using MonkePhone.Extensions;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +18,7 @@ namespace MonkePhone.Behaviours.Apps
         private readonly List<Image> _playerSwatches = [];
         private readonly List<GameObject> _playerLines = [];
         private readonly List<GameObject> _playerMics = [];
+        private readonly List<GameObject> _phoneOwner = [];
         private readonly List<NetPlayer> _playerRefs = [];
 
         private Text _roomIdText;
@@ -49,9 +52,17 @@ namespace MonkePhone.Behaviours.Apps
                 line.name = $"Person ({i + 1})";
                 line.SetActive(false);
 
+                GameObject _grid = line.transform.Find("Grid").gameObject;
+                _grid.SetActive(true);
+                foreach (Transform _child in _grid.transform)
+                {
+                    _child.gameObject.SetActive(false);
+                }
+
                 _playerLines.Add(line);
                 _playerNameTexts.Add(line.transform.Find("Name").GetComponent<Text>());
                 _playerSwatches.Add(line.transform.Find("Swatch").GetComponent<Image>());
+                _phoneOwner.Add(line.transform.Find("Grid/Phone").gameObject);
 
                 _playerMics.Add(line.transform.Find("Mic").gameObject);
 
@@ -159,6 +170,9 @@ namespace MonkePhone.Behaviours.Apps
                 _roomNotice.gameObject.SetActive(false);
 
                 GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
+                Player _player = PhotonNetwork.CurrentRoom.GetPlayer(player.ActorNumber);
+
+                GetMonkePhoneOwner(_phoneOwner[i], _player);
 
                 _playerNameTexts[i].text = player.GetName();
                 _playerNameTexts[i].color = rig != null ? rig.playerText1.color : UnityEngine.Color.white;
@@ -190,6 +204,12 @@ namespace MonkePhone.Behaviours.Apps
         private void AssignReport(NetPlayer player)
         {
             //TODO: yk make this work
+        }
+
+        private void GetMonkePhoneOwner(GameObject _phoneIcon, Player _player)
+        {
+            if (_player.CustomProperties.ContainsKey(Constants.CustomProperty))
+                _phoneIcon.SetActive(true);
         }
 
         private void SetSwatchColour(Image swatch, VRRig rig)

@@ -14,6 +14,7 @@ namespace MonkePhone.Behaviours
             "Lock Screen",
             "Home Screen",
             "Top Bar",
+            "MonkeGramApp"
         ];
 
         private Transform _canvas;
