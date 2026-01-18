@@ -514,7 +514,7 @@ namespace MonkePhone.Behaviours
             Phone.transform.Find("Model").GetComponent<MeshRenderer>().material.color = playerColour;
            // Keyboard.Mesh.material.color = playerColour;
         }
-
+            
         public void SetHome()
         {
             if (!IsPowered)
@@ -546,8 +546,6 @@ namespace MonkePhone.Behaviours
             _outdatedMenuObject.SetActive(IsOutdated);
             Keyboard.Active = false;
         }
-
-
 
         public void TogglePower() => SetPower(!IsPowered);
 

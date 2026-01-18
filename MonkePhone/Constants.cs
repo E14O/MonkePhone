@@ -90,5 +90,13 @@ namespace MonkePhone
             Position = new Vector3(0.0828f, 0.0813f, 0.04f),
             Rotation = Quaternion.Euler(280f, 96f, 83f)
         };
+
+        //Debug 
+
+        public static readonly ObjectPosition Debug = new()
+        {
+            Position = new Vector3(0.0828f, 0.0813f, 0.04f),
+            Rotation = Quaternion.Euler(280f, 96f, 83f)
+        };
     }
 }

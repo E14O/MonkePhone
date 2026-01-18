@@ -57,7 +57,6 @@ namespace MonkePhone.Behaviours
             }
         }
 
-
         public void CloseDummyApps() => _dummyApps.Values.ToList().ForEach(app => app.SetActive(false));
     }
 }

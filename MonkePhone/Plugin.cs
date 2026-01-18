@@ -25,7 +25,7 @@ namespace MonkePhone
         {
             try
             {
-                new GameObject(Constants.Name, typeof(NetworkHandler), typeof(PhoneManager), typeof(PhoneStandBy));
+                new GameObject(Constants.Name, typeof(NetworkHandler), typeof(PhoneManager), typeof(DebugManager));
             }
             catch (Exception ex)
             {   
