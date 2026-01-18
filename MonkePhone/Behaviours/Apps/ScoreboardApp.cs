@@ -85,15 +85,17 @@ namespace MonkePhone.Behaviours.Apps
         {
             if (!PhotonNetwork.InRoom) return;
 
-            if (_micUpdateTimer < MicUpdateInterval) return;
-
             _micUpdateTimer += Time.deltaTime;
+
+            if (_micUpdateTimer < MicUpdateInterval) return;
 
             _micUpdateTimer = 0f;
 
             for (int i = 0; i < _playerLines.Count; i++)
             {
                 NetPlayer player = _playerRefs[i];
+
+                if (player == null || player.IsNull) continue;
 
                 if (GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig))
                 {
