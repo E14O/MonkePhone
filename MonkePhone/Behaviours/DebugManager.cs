@@ -12,6 +12,7 @@ namespace MonkePhone.Behaviours
         private bool _ScoreBoardOpen = false;
         private bool _GUIShow = false;
         private bool _Phone = true;
+        private string _RandomFile;
 
         /// <summary>
         /// This is for testing the post system and other systems on computer. (It does not send the photo to a server it only works if a webhook is set)
@@ -42,16 +43,15 @@ namespace MonkePhone.Behaviours
                     }
                 }
 
-                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 1, width, height), "Post Sample"))
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 1, width, height), "SetWallpaper"))
                 {
-                    string _Folder = PhoneManager.Instance.PhotosPath;
+                    GetRandomImage();
+                    PhoneManager.Instance.ApplyWallpaper(false, _RandomFile);
+                }
 
-                    var _Files = Directory.GetFiles(_Folder, "*.png");
-
-                    if (_Files.Length == 0) return;
-
-                    string _RandomFile = _Files[Random.Range(0, _Files.Length)];
-
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 2, width, height), "Post Sample"))
+                {
+                    GetRandomImage();
                     byte[] bytes = File.ReadAllBytes(_RandomFile);
 
                     Photo photo = new()
@@ -63,16 +63,15 @@ namespace MonkePhone.Behaviours
 
                     PhoneManager.Instance.GetApp<GalleryApp>().RelativePhotos.Add(photo);
                     PhoneManager.Instance.GetApp<GalleryApp>().SendWebhook(photo.Summary, photo.Name, photo.Bytes);
-                    PhoneManager.Instance.ApplyWallpaper(false, _RandomFile);
                 }
 
-                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 2, width, height), "PowerButton")) PhoneManager.Instance.TogglePower();
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 3, width, height), "PowerButton")) PhoneManager.Instance.TogglePower();
 
-                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 3, width, height), "HomeButton")) PhoneManager.Instance.SetHome();
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 4, width, height), "HomeButton")) PhoneManager.Instance.SetHome();
 
-                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 4, width, height), "ActionButton")) PhoneLockScreen.SetActionButton();
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 5, width, height), "ActionButton")) PhoneLockScreen.SetActionButton();
 
-                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 5, width, height), "MonkeGram"))
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 6, width, height), "MonkeGram"))
                 {
                     if (!_MonkeGramOpen)
                     {
@@ -86,7 +85,7 @@ namespace MonkePhone.Behaviours
                     }
                 }
 
-                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 6, width, height), "ScoreBoard"))
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 7, width, height), "ScoreBoard"))
                 {
                     if (!_ScoreBoardOpen)
                     {
@@ -102,6 +101,16 @@ namespace MonkePhone.Behaviours
             }
         }
 
+        private void GetRandomImage()
+        {
+            string _Folder = PhoneManager.Instance.PhotosPath;
+
+            var _Files = Directory.GetFiles(_Folder, "*.png");
+
+            if (_Files.Length == 0) return;
+
+            _RandomFile = _Files[Random.Range(0, _Files.Length)];
+        }
         private void Phone(Transform phone, ObjectPosition position)
         {
             //TODO: Make gui toggle to move phone towards main camera

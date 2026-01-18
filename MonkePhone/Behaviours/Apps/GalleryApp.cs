@@ -218,11 +218,11 @@ namespace MonkePhone.Behaviours.Apps
                     await YieldUtils.Yield(webRequest);
 
                     photo = RelativePhotos.First(photo => photo.Name == fileName);
-                    isRelevant = Path.GetFileName(_photoComparison.ElementAt(_currentPhoto).Key) == fileName;
+                    isRelevant = _photoComparison != null && Path.GetFileName(_photoComparison.ElementAt(_currentPhoto).Key) == fileName;
 
                     if (webRequest.result == UnityWebRequest.Result.Success)
                     {
-                        Logging.Log("A photo has been successfully uploaded to the website");
+                        Logging.Log("A photo has been successfully uploaded to the webhook");
 
                         PlaySound("RequestSuccess");
 
@@ -233,7 +233,7 @@ namespace MonkePhone.Behaviours.Apps
                     }
                     else
                     {
-                        Logging.Error($"A photo was unable to be uploaded to the website: {webRequest.error}");
+                        Logging.Error($"A photo was unable to be uploaded to the webhook: {webRequest.error}");
                         Logging.Warning($"Server response: {webRequest.downloadHandler.text}");
 
                         PlaySound("RequestDenied");
