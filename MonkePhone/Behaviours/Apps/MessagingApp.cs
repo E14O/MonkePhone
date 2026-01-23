@@ -18,7 +18,7 @@ namespace MonkePhone.Behaviours.Apps
         // check if player has monkephone
         // create a line "PLAYERNAME" "No Current Messages..."
 
-        /*private readonly List<GameObject> _messageablePlayers;
+        private readonly List<GameObject> _messageablePlayers;
         private readonly List<Text> _playerName;
         private readonly List<Text> _playerStatus;
 
@@ -119,6 +119,6 @@ namespace MonkePhone.Behaviours.Apps
 
         private void PlayerJoinedEvent(NetPlayer player) => RefreshApp();
 
-        private void PlayerLeftEvent(NetPlayer player) => RefreshApp();*/
+        private void PlayerLeftEvent(NetPlayer player) => RefreshApp();
     }
 }

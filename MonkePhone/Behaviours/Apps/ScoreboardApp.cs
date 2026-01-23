@@ -172,7 +172,7 @@ namespace MonkePhone.Behaviours.Apps
                 GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
                 Player _player = PhotonNetwork.CurrentRoom.GetPlayer(player.ActorNumber);
 
-                GetMonkePhoneOwner(_phoneOwner[i], _player);
+                GetOwner(_phoneOwner[i], _player, "Phone");
 
                 _playerNameTexts[i].text = player.GetName();
                 _playerNameTexts[i].color = rig != null ? rig.playerText1.color : UnityEngine.Color.white;
@@ -206,10 +206,22 @@ namespace MonkePhone.Behaviours.Apps
             //TODO: yk make this work
         }
 
-        private void GetMonkePhoneOwner(GameObject _phoneIcon, Player _player)
+        private void GetOwner(GameObject _phoneIcon, Player _player, string _property)
         {
-            if (_player.CustomProperties.ContainsKey(Constants.CustomProperty))
-                _phoneIcon.SetActive(true);
+            bool _hasProperty = false;
+
+            switch (_property)
+            {
+                case "Phone":
+                    _hasProperty = _player.CustomProperties.ContainsKey(Constants.CustomProperty);
+                    break;
+
+                case "Watch":
+                    _hasProperty = _player.CustomProperties.ContainsKey(Constants.CustomProperty);
+                    break;
+            }
+
+            _phoneIcon.SetActive(_hasProperty);
         }
 
         private void SetSwatchColour(Image swatch, VRRig rig)

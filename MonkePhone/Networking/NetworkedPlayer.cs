@@ -77,7 +77,6 @@ namespace MonkePhone.Networking
             if (HasMonkePhone)
             {
                 HasMonkePhone = false;
-                Rig.OnColorChanged -= OnColourChanged;
                 Destroy(Phone);
             }
         }
@@ -141,6 +140,7 @@ namespace MonkePhone.Networking
             Phone.SetActive(!isInvisible);
         }
 
+
         public async Task CreateMonkePhone(Dictionary<string, object> properties)
         {
             Phone = Instantiate(await AssetLoader.LoadAsset<GameObject>(Constants.NetPhoneName));
@@ -152,7 +152,6 @@ namespace MonkePhone.Networking
             Phone.transform.localEulerAngles = Vector3.zero;
 
             _meshRenderer = Phone.transform.Find("Model").GetComponent<MeshRenderer>();
-            _meshRenderer.material = new Material(_meshRenderer.material);
 
             try
             {
@@ -194,9 +193,6 @@ namespace MonkePhone.Networking
             {
                 Logging.Error($"Error when attempting to prepare unique camera texture for {Rig.Creator.NickName}'s NetPhone: {ex}");
             }
-
-            OnColourChanged(Rig.playerColor);
-            Rig.OnColorChanged += OnColourChanged;
         }
 
         public void ScreenNetworking(Dictionary<string, object> properties)
@@ -244,11 +240,6 @@ namespace MonkePhone.Networking
             }
         }
 
-        public void OnColourChanged(Color colour)
-        {
-            _meshRenderer.material.color = colour;
-        }
-
         public void FixedUpdate()
         {
             if (Phone is null)
@@ -263,6 +254,14 @@ namespace MonkePhone.Networking
             {
                 _camera.gameObject.SetActive(false);
                 _background.gameObject.SetActive(false);
+            }
+
+            if (_meshRenderer != null)
+            {
+                if (_meshRenderer.material.color != Rig.playerColor)
+                {
+                    _meshRenderer.material.color = Rig.playerColor;
+                }
             }
 
             // set there local time networked. (HOPEFULLY THIS WORKS)
@@ -290,6 +289,7 @@ namespace MonkePhone.Networking
                 case ObjectGrabbyState.InHand:
                     Phone.transform.localPosition = Vector3.Lerp(GrabPosition, _isLeftHand ? Constants.LeftHandBasic.Position : Constants.RightHandBasic.Position, InterpolationTime);
                     Phone.transform.localRotation = Quaternion.Lerp(GrabQuaternion, _isLeftHand ? Constants.LeftHandBasic.Rotation : Constants.RightHandBasic.Rotation, InterpolationTime);
+                    InterpolationTime += Time.deltaTime * 5f;
                     InterpolationTime += Time.deltaTime * 5f;
                     break;
             }
