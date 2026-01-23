@@ -51,24 +51,10 @@
     "songs" : 
     [
         {
-            "title" : "SkellonYapV1",
+            "title" : "Maniacs of Noise",
             "coverUrl" : "",
-            "fileName" : "SkellonYap1.mp3",
-            "fileDownloadUrl" : "https://github.com/E14O/MonkePhone/blob/main/DownloadableFiles/SkellonYap1.mp3"
-
-            
-        },
-        {
-            "title" : "SkellonYapV2",
-            "coverUrl" : "",
-            "fileName" : "SkellonYap2.mp3",
-            "fileDownloadUrl" : "https://github.com/E14O/MonkePhone/blob/main/DownloadableFiles/SkellonYap2.mp3"
-        },
-        {
-            "title" : "SkellonYapV3",
-            "coverUrl" : "",
-            "fileName" : "SkellonYap3.mp3",
-            "fileDownloadUrl" : "https://github.com/E14O/MonkePhone/blob/main/DownloadableFiles/SkellonYap3.mp3"
+            "fileName" : "Maniacs_of_Noise.mp3",
+            "fileDownloadUrl" : "https://github.com/HanSolo1000Falcon/GorillaInfo/raw/refs/heads/main/Maniacs_of_Noise.mp3"
         }
     ]
   }
