@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using GorillaLocomotion;
 using MonkePhone.Behaviours.UI;
 using MonkePhone.Extensions;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.UI;
+using Valve.VR.InteractionSystem;
 
 namespace MonkePhone.Behaviours.Apps
 {
@@ -20,6 +23,10 @@ namespace MonkePhone.Behaviours.Apps
         private readonly List<GameObject> _playerMics = [];
         private readonly List<GameObject> _phoneOwner = [];
         private readonly List<NetPlayer> _playerRefs = [];
+        private readonly List<GameObject> _playerMute = [];
+
+        private readonly Dictionary<GameObject, int> _muteButtonIndex = new();
+
 
         private Text _roomIdText;
         private Text _roomNotice;
@@ -62,6 +69,11 @@ namespace MonkePhone.Behaviours.Apps
                 _playerLines.Add(line);
                 _playerNameTexts.Add(line.transform.Find("Name").GetComponent<Text>());
                 _playerSwatches.Add(line.transform.Find("Swatch").GetComponent<Image>());
+
+                GameObject _muteButton = line.transform.Find("Mute").gameObject;
+                _playerMute.Add(_muteButton);
+                _muteButtonIndex[_muteButton] = i;
+
                 _phoneOwner.Add(line.transform.Find("Grid/Phone").gameObject);
 
                 _playerMics.Add(line.transform.Find("Mic").gameObject);
@@ -164,13 +176,22 @@ namespace MonkePhone.Behaviours.Apps
                     continue;
                 }
 
-                _playerLines[i].SetActive(true);
+                if (player.IsLocal)
+                {
+                    _playerMute[i].SetActive(false);
+                }
+                else
+                {
+                    _playerMute[i].SetActive(true);
+                }
+
+                    _playerLines[i].SetActive(true);
                 _playerRefs[i] = player;
 
                 _roomNotice.gameObject.SetActive(false);
 
                 GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
-                Player _player = PhotonNetwork.CurrentRoom.GetPlayer(player.ActorNumber);
+                Photon.Realtime.Player _player = PhotonNetwork.CurrentRoom.GetPlayer(player.ActorNumber);
 
                 GetOwner(_phoneOwner[i], _player, "Phone");
 
@@ -180,33 +201,33 @@ namespace MonkePhone.Behaviours.Apps
                 SetSwatchColour(_playerSwatches[i], rig);
             }
         }
-
         public override void ButtonClick(PhoneUIObject phoneUIObject, bool isLeftHand)
         {
             base.ButtonClick(phoneUIObject, isLeftHand);
 
-            switch (phoneUIObject.name)
+            if (phoneUIObject.name != "Mute") return;
+
+            if (!_muteButtonIndex.TryGetValue(phoneUIObject.gameObject, out int i))
+                return;
+
+            NetPlayer _netPlayer = _playerRefs[i];
+            GorillaParent.instance.vrrigDict.TryGetValue(_netPlayer, out VRRig rig);
+
+            ToggleMute(rig, phoneUIObject);
+            RefreshApp();
+        }
+        public void ToggleMute(VRRig _player, PhoneUIObject _button)
+        {
+            foreach (var line in GorillaScoreboardTotalUpdater.allScoreboardLines)
             {
-                case "Mute":
-                    RefreshApp();
+                if (line.playerVRRig == _player)
+                {
+                    line.PressButton(_player, GorillaPlayerLineButton.ButtonType.Mute);
                     break;
-
-                    /*case "Report":
-                        RefreshApp();
-                        break;
-
-                    case "Cheating":
-                         RefreshApp();
-                         break;*/
+                }
             }
         }
-
-        private void AssignReport(NetPlayer player)
-        {
-            //TODO: yk make this work
-        }
-
-        private void GetOwner(GameObject _phoneIcon, Player _player, string _property)
+        private void GetOwner(GameObject _phoneIcon, Photon.Realtime.Player _player, string _property)
         {
             bool _hasProperty = false;
 
@@ -231,7 +252,7 @@ namespace MonkePhone.Behaviours.Apps
                 if (swatch != null)
                 {
                     swatch.material = null;
-                    swatch.color = UnityEngine.Color.white;
+                    swatch.color = Color.white;
                 }
                 return;
             }
@@ -241,7 +262,7 @@ namespace MonkePhone.Behaviours.Apps
                 ? rig.materialsToChangeTo[index]
                 : rig.scoreboardMaterial;
 
-            UnityEngine.Color color = (index == 0) ? rig.playerColor : (material != null ? material.color : rig.playerColor);
+            Color color = (index == 0) ? rig.playerColor : (material != null ? material.color : rig.playerColor);
 
             if (color.a < 0.1f) color.a = 1f;
 

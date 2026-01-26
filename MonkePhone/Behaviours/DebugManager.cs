@@ -98,6 +98,20 @@ namespace MonkePhone.Behaviours
                         _ScoreBoardOpen = false;
                     }
                 }
+
+                if (GUI.Button(new Rect(xAxis, yAxis + (height + spacing) * 8, width, height), "Messaging"))
+                {
+                    if (!_MonkeGramOpen)
+                    {
+                        PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<MessagingApp>().AppId);
+                        _MonkeGramOpen = true;
+                    }
+                    else
+                    {
+                        PhoneManager.Instance.CloseApp(PhoneManager.Instance.GetApp<MessagingApp>().AppId);
+                        _MonkeGramOpen = false;
+                    }
+                }
             }
         }
 

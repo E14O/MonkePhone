@@ -120,7 +120,6 @@ namespace MonkePhone.Behaviours
 
                 foreach (Transform t in Phone.transform.Find("Canvas"))
                 {
-                    // Logging.Log(t.name);
                     switch (t.name)
                     {
                         case "Home Screen":
@@ -184,7 +183,6 @@ namespace MonkePhone.Behaviours
                             }
                             break;
                     }
-                    // Logging.Log("nice");
                 }
 
                 Logging.Info("passed loading phone");
