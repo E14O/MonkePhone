@@ -33,6 +33,8 @@ namespace MonkePhone.Behaviours
 		public bool levitate_device = false;
 		private Vector3 _levitatePosition;
 		private bool _hasLevitatePosition = false;
+		private bool _buttonJustUsedForDrop = false;
+		private float _spawnCooldown = 0f;
 
 		public static bool Leviating => PhoneManager.Instance.Phone.levitate_device;
 
@@ -63,13 +65,24 @@ namespace MonkePhone.Behaviours
 
 		public void Update()
 		{
-			if (levitate_device && ControllerInputPoller.instance.leftControllerSecondaryButton)
+			bool leftXPressed = ControllerInputPoller.instance.leftControllerPrimaryButton;
+			bool rightAPressed = ControllerInputPoller.instance.rightControllerPrimaryButton;
+
+			if (_spawnCooldown > 0f)
 			{
-				SpawnPhoneInFrontOfPlayer(true);
+				_spawnCooldown -= Time.deltaTime;
 			}
-			else if (levitate_device && ControllerInputPoller.instance.rightControllerSecondaryButton)
+
+			if (_buttonJustUsedForDrop && !leftXPressed && !rightAPressed)
 			{
-				SpawnPhoneInFrontOfPlayer(false);
+				_buttonJustUsedForDrop = false;
+			}
+
+			if (levitate_device && !_buttonJustUsedForDrop && _spawnCooldown <= 0f && (leftXPressed || rightAPressed))
+			{
+				SpawnPhoneInFrontOfPlayer(leftXPressed);
+				_buttonJustUsedForDrop = true;
+				_spawnCooldown = 3f;
 			}
 
 			Vector3 currentLeftControllerPosition = GTPlayer.Instance.leftHand.handFollower.position;
@@ -159,6 +172,12 @@ namespace MonkePhone.Behaviours
 		public void FixedUpdate()
 		{
 			HandlePhoneState();
+
+			if (levitate_device && _hasLevitatePosition)
+			{
+				transform.position = _levitatePosition + (Vector3.up * (Mathf.Sin(Time.frameCount * 0.017453292f) / 10f));
+				transform.Rotate(Vector3.up * 10f / 0.017453292f / 5f * Time.fixedDeltaTime, Space.World);
+			}
 		}
 
 		public void HandlePhoneState()
@@ -171,11 +190,6 @@ namespace MonkePhone.Behaviours
 						transform.localPosition = Vector3.Lerp(GrabPosition, Constants.Waist.Position, InterpolationTime);
 						transform.localRotation = Quaternion.Lerp(GrabQuaternion, Constants.Waist.Rotation, InterpolationTime);
 						InterpolationTime += Time.deltaTime * 5f;
-					}
-					else if (_hasLevitatePosition)
-					{
-						transform.position = _levitatePosition + (Vector3.up * (Mathf.Sin(Time.frameCount * 0.017453292f) / 10f));
-						transform.Rotate(Vector3.up * 10f / 0.017453292f / 5f * Time.fixedDeltaTime, Space.World);
 					}
 					break;
 
@@ -210,7 +224,7 @@ namespace MonkePhone.Behaviours
 		public void SpawnPhoneInFrontOfPlayer(bool isLeftHand)
 		{
 			Transform headTransform = GorillaTagger.Instance.offlineVRRig.headMesh.transform;
-			Vector3 spawnPosition = headTransform.position + (headTransform.forward * 0.5f); 
+			Vector3 spawnPosition = headTransform.position + (headTransform.forward * 0.66f); 
 
 			levitate_device = true;
 			_levitatePosition = spawnPosition;
@@ -218,7 +232,7 @@ namespace MonkePhone.Behaviours
 
 			transform.SetParent(null);
 			transform.position = spawnPosition;
-
+			
 			transform.eulerAngles = new Vector3();
 
 			InterpolationTime = 0f;
@@ -270,7 +284,7 @@ namespace MonkePhone.Behaviours
 			{
 				transform.SetParent(null);
 				_levitatePosition = transform.position;
-				_hasLevitatePosition = true;
+				_buttonJustUsedForDrop = true;
 			}
 			else
 			{
