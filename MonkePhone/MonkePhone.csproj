@@ -41,8 +41,8 @@
 		<Reference Include="0Harmony">
 			<HintPath>$(BepInExAssemblyPath)\0Harmony.dll</HintPath>
 		</Reference>
-		<Reference Include="Assembly-CSharp" Publicize="true">
-			<HintPath>$(GameAssemblyPath)\Assembly-CSharp.dll</HintPath>
+		<Reference Include="Assembly-CSharp" Publicize="True">
+		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\Assembly-CSharp.dll</HintPath>
 		</Reference>
 		<Reference Include="Assembly-CSharp-firstpass">
 			<HintPath>$(GameAssemblyPath)\Assembly-CSharp-firstpass.dll</HintPath>

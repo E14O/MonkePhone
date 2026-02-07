@@ -214,11 +214,13 @@ namespace MonkePhone.Networking
                 State = isHeld ? ObjectGrabbyState.InHand : (levitate ? ObjectGrabbyState.Ignore : ObjectGrabbyState.Mounted);
                 _isLeftHand = inLeftHand;
                 InterpolationTime = 0f;
-                Phone.transform.SetParent(isHeld ? (inLeftHand ? Rig.leftHandTransform.parent : Rig.rightHandTransform.parent) : (levitate ? null : Rig.headMesh.transform.parent));
-                GrabPosition = Phone.transform.localPosition;
-                GrabQuaternion = Phone.transform.localRotation;
+				var ik = Rig.myIk ?? Rig.GetComponent<GorillaIK>();
+				Phone.transform.SetParent(isHeld ? (inLeftHand ? ik.leftHand : ik.rightHand) : (levitate ? null : (ik.bodyBone.Find("body") ?? ik.bodyBone.GetChild(0))));
 
-                if (!phoneConfigured)
+				GrabPosition = Phone.transform.localPosition;
+				GrabQuaternion = Phone.transform.localRotation;
+
+				if (!phoneConfigured)
                 {
                     Phone.transform.localScale = new Vector3(0.05f, 0.048f, 0.05f);
                 }
