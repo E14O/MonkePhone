@@ -185,7 +185,7 @@ namespace MonkePhone.Behaviours.Apps
                     _playerMute[i].SetActive(true);
                 }
 
-                    _playerLines[i].SetActive(true);
+                _playerLines[i].SetActive(true);
                 _playerRefs[i] = player;
 
                 _roomNotice.gameObject.SetActive(false);

@@ -115,7 +115,7 @@ namespace MonkePhone.Networking
 
                 if (properties.TryGetValue("Version", out object value))
                 {
-                    if (value.ToString() == "1.0.5")
+                    if (value.ToString() == "1.0.6")
                     {
                         // devs version so keep it on the camera app4
                         _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
@@ -176,7 +176,7 @@ namespace MonkePhone.Networking
 
                 if (properties.TryGetValue("Version", out object value))
                 {
-                    if (value.ToString() == "1.0.5")
+                    if (value.ToString() == "1.0.6")
                     {
                         // devs version so keep it on the camera app
                         _dummyPhoneManager.OpenDummyApp("MonkeGramApp");

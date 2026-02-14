@@ -69,19 +69,17 @@ namespace MonkePhone.Behaviours.Apps
 
 		public void Update()
 		{
-			if (MusicSource && MusicSource.clip != null && MusicSource.isPlaying)
+			if (MusicSource && MusicSource.clip != null)
 			{
 				float progress = MusicSource.time / MusicSource.clip.length;
-				var parameters = _timelineSlider.Parameters;
-				parameters.z = progress * 100;
-				_timelineSlider.Parameters = parameters;
+				_timelineSlider.Value = progress;
 				_timelineSlider.UpdatePosition();
 
-				_songTimePosition.text = MusicSource.time.ToString("F2");
+				_songTimePosition.text = TimeSpan.FromSeconds(MusicSource.time).ToString(@"mm\:ss");
 
-				if (_songLengthText != null)
+                if (_songLengthText != null)
 				{
-					_songLengthText.text = MusicSource.clip.length.ToString("F2");
+					_songLengthText.text = TimeSpan.FromSeconds(MusicSource.clip.length).ToString(@"mm\:ss");
 				}
 			}
 		}
@@ -161,7 +159,7 @@ namespace MonkePhone.Behaviours.Apps
 			}
 		}
 
-		private void RefreshSongList()
+		private async Task RefreshSongList()
 		{
 			Logging.Log("[MusicApp] Refreshing local song list UI");
 			Transform table = transform.Find("MusicPlayerContainer/Table");
@@ -187,11 +185,13 @@ namespace MonkePhone.Behaviours.Apps
 
 				item.Find("AudioTitle").GetComponent<Text>().text = Path.GetFileNameWithoutExtension(song);
 				item.Find("Format Label").GetComponent<Text>().text = Path.GetExtension(song).Replace(".", "").ToUpper();
-				item.Find("Length Label").GetComponent<Text>().text = "--:--";
+				item.Find("Length Label").GetComponent<Text>().text = song.Length.ToString(@"mm\:ss");
 			}
 		}
 
-		public override async void ButtonClick(PhoneUIObject phoneUIObject, bool isLeftHand)
+
+
+        public override async void ButtonClick(PhoneUIObject phoneUIObject, bool isLeftHand)
 		{
 			Logging.Log($"[MusicApp] Button clicked: {phoneUIObject.name}");
 			if (phoneUIObject.name.StartsWith("download"))
