@@ -214,6 +214,7 @@ namespace MonkePhone.Networking
                 State = isHeld ? ObjectGrabbyState.InHand : (levitate ? ObjectGrabbyState.Ignore : ObjectGrabbyState.Mounted);
                 _isLeftHand = inLeftHand;
                 InterpolationTime = 0f;
+
 				var ik = Rig.myIk ?? Rig.GetComponent<GorillaIK>();
 				Phone.transform.SetParent(isHeld ? (inLeftHand ? ik.leftHand : ik.rightHand) : (levitate ? null : (ik.bodyBone.Find("body") ?? ik.bodyBone.GetChild(0))));
 
