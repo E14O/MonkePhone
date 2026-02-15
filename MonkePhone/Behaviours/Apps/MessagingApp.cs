@@ -20,7 +20,6 @@ namespace MonkePhone.Behaviours.Apps
         public GameObject _chatBox;
         private GameObject _templateLine;
         private GameObject _mainGrid;
-        int MaxPlayers = 8;
 
         public override void Initialize()
         {

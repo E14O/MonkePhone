@@ -43,11 +43,7 @@ namespace MonkePhone.Extensions
 
 			Hashtable customProperties = player.CustomProperties;
 			CosmeticsController.CosmeticSet cosmeticSet = vrRig.cosmeticSet;
-			string wornCosmetics = (cosmeticSet != null && cosmeticSet.items != null) ? cosmeticSet.items
-				.Where(item => !item.isNullItem && item.itemName != CosmeticsController.instance.nullItem.itemName)
-				.Select(item => item.itemName)
-				.Where(vrRig.IsItemAllowed)
-				.Concat() : "";
+			string Cosmetics = vrRig.rawCosmeticString; 
 
 			string summaryAppendage = "";
 
@@ -56,9 +52,9 @@ namespace MonkePhone.Extensions
 				summaryAppendage += PhoneManager.Instance.Data.phoneEmoji;
 			}
 
-			if (wornCosmetics != "")
+			if (Cosmetics != "")
 			{
-				var usedCosmeticEmoji = PhoneManager.Instance.Data.cosmeticEmoji.Where(emoji => wornCosmetics.Contains(emoji.cosmeticId));
+				var usedCosmeticEmoji = PhoneManager.Instance.Data.cosmeticEmoji.Where(emoji => Cosmetics.Contains(emoji.cosmeticId));
 				foreach (var emoji in usedCosmeticEmoji)
 				{
 					summaryAppendage += emoji.emoji;

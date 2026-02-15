@@ -20,7 +20,7 @@ namespace MonkePhone
         /// <summary>
         /// The version of the plugin
         /// </summary>
-        public const string Version = "1.0.6";
+        public const string Version = "1.0.7";
 
         // Assets
 
