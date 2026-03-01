@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BepInEx;
+using GorillaLocomotion;
+using GorillaNetworking;
 using MonkePhone.Behaviours.Apps;
 using MonkePhone.Extensions;
 using MonkePhone.Interfaces;
@@ -561,7 +563,6 @@ namespace MonkePhone.Behaviours
             {
                 _TopBarObject.SetActive(true);
                 _LockScreenObject.SetActive(true);
-
                 NetworkHandler.Instance.SetProperty("DummyApp", "Lock Screen");
             }
             else

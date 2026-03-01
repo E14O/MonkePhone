@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GorillaLocomotion;
 using MonkePhone.Behaviours;
 using MonkePhone.Interfaces;
 using MonkePhone.Models;
@@ -24,7 +25,7 @@ namespace MonkePhone.Networking
 
         public VRRig Rig;
 
-        public bool InRange => Vector3.Distance(Camera.main.transform.position, transform.position) < 5f;
+        public bool InRange => Vector3.Distance(GTPlayer.Instance.HeadCenterPosition, transform.position) < Constants.PhoneVisibilityDistance;
 
         public bool HasMonkePhone;
 
@@ -115,7 +116,7 @@ namespace MonkePhone.Networking
 
                 if (properties.TryGetValue("Version", out object value))
                 {
-                    if (value.ToString() == "1.0.6")
+                    if (value.ToString() == "1.0.9")
                     {
                         // devs version so keep it on the camera app4
                         _dummyPhoneManager.OpenDummyApp("MonkeGramApp");

@@ -34,9 +34,9 @@ namespace MonkePhone
 
         public const string CustomProperty = "MonkePhone"; // monkephone 2025
 
-        public const float PhoneVisibilityDistance = 2f;
+        public const float PhoneVisibilityDistance = 3f;
 
-        public const float NetworkCooldown = 0.2f;
+        public const float NetworkCooldown = 0.5f;
 
         public const int NetworkWaitTime = 300;
 

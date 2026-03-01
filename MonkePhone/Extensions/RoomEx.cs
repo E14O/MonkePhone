@@ -1,4 +1,5 @@
 ﻿using GorillaNetworking;
+using GorillaNetworking.Store;
 using Photon.Pun;
 using Photon.Realtime;
 
