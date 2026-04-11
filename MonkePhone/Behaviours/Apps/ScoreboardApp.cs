@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using GorillaLocomotion;
+using MonkePhone.Behaviours;
 using MonkePhone.Behaviours.UI;
 using MonkePhone.Extensions;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 using UnityEngine.UI;
 using Valve.VR.InteractionSystem;
 
@@ -118,24 +117,20 @@ namespace MonkePhone.Behaviours.Apps
             {
                 NetPlayer player = _playerRefs[i];
 
-                if (player == null || player.IsNull) continue;
-
-                if (GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig))
-                {
-                    SetSwatchColour(_playerSwatches[i], rig);
-                }
-            }
-
-            for (int i = 0; i < _playerLines.Count; i++)
-            {
-                NetPlayer player = _playerRefs[i];
                 if (player == null || player.IsNull)
                 {
                     _playerMics[i].SetActive(false);
                     continue;
                 }
 
-                _playerMics[i].SetActive(player.IsTalking());
+                VRRig rig = null;
+                if (VRRigCache.Instance != null && VRRigCache.Instance.TryGetVrrig(player, out var container) && container != null)
+                {
+                    rig = container.vrrig;
+                }
+
+                SetSwatchColour(_playerSwatches[i], rig);
+                _playerMics[i].SetActive(PlayerEx.IsTalking(player, rig));
             }
         }
 
@@ -152,7 +147,6 @@ namespace MonkePhone.Behaviours.Apps
                 }
 
                 _roomNotice.gameObject.SetActive(true);
-
                 return;
             }
 
@@ -190,10 +184,15 @@ namespace MonkePhone.Behaviours.Apps
 
                 _roomNotice.gameObject.SetActive(false);
 
-                GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig);
-                Photon.Realtime.Player _player = PhotonNetwork.CurrentRoom.GetPlayer(player.ActorNumber);
+				VRRig rig = null; if (VRRigCache.Instance != null && VRRigCache.Instance.TryGetVrrig(player, out var container) && container != null) { rig = container.vrrig; }
 
-                GetOwner(_phoneOwner[i], _player, "Phone");
+
+				Photon.Realtime.Player _player = PhotonNetwork.CurrentRoom.GetPlayer(player.ActorNumber);
+
+                if (_player != null)
+                {
+                    GetOwner(_phoneOwner[i], _player, "Phone");
+                }
 
                 _playerNameTexts[i].text = player.GetName();
                 _playerNameTexts[i].color = rig != null ? rig.playerText1.color : UnityEngine.Color.white;
@@ -201,6 +200,7 @@ namespace MonkePhone.Behaviours.Apps
                 SetSwatchColour(_playerSwatches[i], rig);
             }
         }
+
         public override void ButtonClick(PhoneUIObject phoneUIObject, bool isLeftHand)
         {
             base.ButtonClick(phoneUIObject, isLeftHand);
@@ -211,13 +211,19 @@ namespace MonkePhone.Behaviours.Apps
                 return;
 
             NetPlayer _netPlayer = _playerRefs[i];
-            GorillaParent.instance.vrrigDict.TryGetValue(_netPlayer, out VRRig rig);
+            if (_netPlayer == null || _netPlayer.IsNull) return;
 
-            ToggleMute(rig, phoneUIObject);
+			VRRig rig = null; if (VRRigCache.Instance != null && VRRigCache.Instance.TryGetVrrig(_netPlayer, out var container) && container != null) { rig = container.vrrig; }
+
+
+			ToggleMute(rig, phoneUIObject);
             RefreshApp();
         }
+
         public void ToggleMute(VRRig _player, PhoneUIObject _button)
         {
+            if (_player == null) return;
+
             foreach (var line in GorillaScoreboardTotalUpdater.allScoreboardLines)
             {
                 if (line.playerVRRig == _player)
@@ -227,6 +233,7 @@ namespace MonkePhone.Behaviours.Apps
                 }
             }
         }
+
         private void GetOwner(GameObject _phoneIcon, Photon.Realtime.Player _player, string _property)
         {
             bool _hasProperty = false;
@@ -236,9 +243,8 @@ namespace MonkePhone.Behaviours.Apps
                 case "Phone":
                     _hasProperty = _player.CustomProperties.ContainsKey(Constants.CustomProperty);
                     break;
-
                 case "Watch":
-                    _hasProperty = _player.CustomProperties.ContainsKey(Constants.CustomProperty);
+                    _hasProperty = _player.CustomProperties.ContainsKey("Watch"); // Fixed: was checking same property
                     break;
             }
 

@@ -43,8 +43,7 @@ namespace MonkePhone.Extensions
 
 			Hashtable customProperties = player.CustomProperties;
 			CosmeticsController.CosmeticSet cosmeticSet = vrRig.cosmeticSet;
-			string Cosmetics = vrRig.rawCosmeticString; 
-
+			
 			string summaryAppendage = "";
 
 			if (includePhone && customProperties.ContainsKey(Constants.CustomProperty))
@@ -52,47 +51,26 @@ namespace MonkePhone.Extensions
 				summaryAppendage += PhoneManager.Instance.Data.phoneEmoji;
 			}
 
-			if (Cosmetics != "")
-			{
-				var usedCosmeticEmoji = PhoneManager.Instance.Data.cosmeticEmoji.Where(emoji => Cosmetics.Contains(emoji.cosmeticId));
-				foreach (var emoji in usedCosmeticEmoji)
-				{
-					summaryAppendage += emoji.emoji;
-				}
-			}
-
+			
 			return summaryAppendage == "" ? safetyCheckName : $"{safetyCheckName}{summaryAppendage}";
 		}
 
-		public static bool IsTalking(this NetPlayer player)
+		public static bool IsTalking(NetPlayer player, VRRig rig)
 		{
-			if (player == null || player.IsNull)
-				return false;
-
-			if (!GorillaParent.instance.vrrigDict.TryGetValue(player, out VRRig rig) || rig == null)
-				return false;
-
-			if (GorillaComputer.instance.voiceChatOn == "FALSE")
-				return false;
+			if (player == null || rig == null) return false;
+			if (GorillaComputer.instance.voiceChatOn == "FALSE") return false;
 
 			if (rig.remoteUseReplacementVoice || rig.localUseReplacementVoice)
-			{
 				return rig.SpeakingLoudness > rig.replacementVoiceLoudnessThreshold;
-			}
 
-			if (player.IsLocal && rig.isLocal)
+			if (player.IsLocal)
 			{
-				Recorder recorder = NetworkSystem.Instance.LocalRecorder;
-				return recorder != null && recorder.IsCurrentlyTransmitting;
+				Recorder rec = NetworkSystem.Instance.LocalRecorder;
+				return rec != null && rec.IsCurrentlyTransmitting;
 			}
 
 			Speaker speaker = rig.GetComponentInChildren<Speaker>();
-			if (speaker != null)
-			{
-				return speaker.IsPlaying;
-			}
-
-			return rig.voiceAudio != null && rig.voiceAudio.isPlaying && rig.voiceAudio.volume > 0.01f;
+			return speaker != null && speaker.IsPlaying;
 		}
 	}
 }

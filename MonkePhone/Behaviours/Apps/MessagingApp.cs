@@ -77,7 +77,7 @@ namespace MonkePhone.Behaviours.Apps
 
             foreach (NetPlayer _player in _players)
             {
-                GorillaParent.instance.vrrigDict.TryGetValue(_player, out VRRig rig);
+                VRRig rig = null; if (VRRigCache.Instance != null && VRRigCache.Instance.TryGetVrrig(_player, out var container) && container != null) { rig = container.vrrig; }
 
                 if (_player == null || _player.IsNull || !_player.InRoom)
                     continue;

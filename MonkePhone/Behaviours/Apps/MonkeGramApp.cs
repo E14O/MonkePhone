@@ -162,9 +162,11 @@ namespace MonkePhone.Behaviours.Apps
                     UnityLayer.NoMirror.ToString()
                 );
 
-                var supportiveRigs = GorillaParent.instance.vrrigs.Where(rig => rig.Creator != null && !rig.Creator.IsLocal && Camera.PointInCameraView(rig.tagSound.transform.position, true, UnityLayer.GorillaTagCollider, supportiveLayerMask));
+				var supportiveRigs = VRRigCache.ActiveRigs != null
+	 ? VRRigCache.ActiveRigs.Where(rig => rig.Creator != null && !rig.Creator.IsLocal && Camera.PointInCameraView(rig.tagSound.transform.position, true, UnityLayer.GorillaTagCollider, supportiveLayerMask))
+	 : Enumerable.Empty<VRRig>();
 
-                bool localInView = Camera.PointInCameraView(GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position);
+				bool localInView = Camera.PointInCameraView(GorillaLocomotion.GTPlayer.Instance.headCollider.transform.position);
 
                 _finalContents += supportiveRigs.Any() ? $"{(localInView ? "with" : "of")} {supportiveRigs.Select(rig => rig.Creator.GetName(rig)).ListElements()}{(Configuration.RevealMap.Value ? $" in {currentMap}" : "")}" : (Configuration.RevealMap.Value ? $"in {currentMap}" : "");
             }
