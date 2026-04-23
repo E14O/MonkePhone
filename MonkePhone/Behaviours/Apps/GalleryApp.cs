@@ -1,8 +1,10 @@
-﻿using MonkePhone.Behaviours.UI;
+﻿using GorillaNetworking;
+using MonkePhone.Behaviours.UI;
 using MonkePhone.Extensions;
 using MonkePhone.Models;
 using MonkePhone.Tools;
 using MonkePhone.Utilities;
+using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +24,7 @@ namespace MonkePhone.Behaviours.Apps
 
         public Image _galleryPhoto;
         public Text _galleryText, _gallerySelection, _galleryWarning;
-        private GameObject _deleteButton, _uploadButton, thumbnailButton;
+        private GameObject _deleteButton, _uploadButton, _thumbnailButton;
 
         public List<Photo> RelativePhotos = [];
 
@@ -34,7 +36,7 @@ namespace MonkePhone.Behaviours.Apps
             _galleryWarning = transform.Find("Header (1)").GetComponent<Text>();
             _deleteButton = transform.Find("Photos Trash").gameObject;
             _uploadButton = transform.Find("Photos Post").gameObject;
-            thumbnailButton = transform.Find("SetThumbnail").gameObject;
+            _thumbnailButton = transform.Find("SetThumbnail").gameObject;
         }
 
         public override void AppOpened()
@@ -143,16 +145,16 @@ namespace MonkePhone.Behaviours.Apps
                     _galleryText.text = "";
                     _galleryPhoto.enabled = false;
                     _gallerySelection.text = "";
-                    //_deleteButton.SetActive(false);
+                    _deleteButton.SetActive(false);
                     _uploadButton.SetActive(false);
-                    thumbnailButton.SetActive(false);
+                    _thumbnailButton.SetActive(false);
                     return;
                 }
 
                 _currentPhoto = MathEx.Wrap(_currentPhoto, 0, _photoComparison.Count);
 
-                //_deleteButton.SetActive(true);
-                thumbnailButton.SetActive(true);
+                _deleteButton.SetActive(true);
+                _thumbnailButton.SetActive(true);
 
                 var tex = new Texture2D(2, 2);
                 tex.LoadImage(File.ReadAllBytes(Path.Combine(PhoneManager.Instance.PhotosPath, _photoComparison.ElementAt(_currentPhoto).Value)));
@@ -208,7 +210,7 @@ namespace MonkePhone.Behaviours.Apps
             switch (Configuration.UploadMethod.Value)
             {
                 case Configuration.EUploadMethod.Webhook:
-                    form.AddField("username", Constants.Name);
+                    form.AddField("username", $"MonkeGram - {GorillaComputer.instance.currentName}");
                     form.AddField("content", message);
                     form.AddBinaryData("file", image, "image.png", "image/png");
 
@@ -216,11 +218,11 @@ namespace MonkePhone.Behaviours.Apps
                     await YieldUtils.Yield(webRequest);
 
                     photo = RelativePhotos.First(photo => photo.Name == fileName);
-                    isRelevant = Path.GetFileName(_photoComparison.ElementAt(_currentPhoto).Key) == fileName;
+                    isRelevant = _photoComparison != null && Path.GetFileName(_photoComparison.ElementAt(_currentPhoto).Key) == fileName;
 
                     if (webRequest.result == UnityWebRequest.Result.Success)
                     {
-                        Logging.Log("A photo has been successfully uploaded to the website");
+                        Logging.Log("A photo has been successfully uploaded to the webhook");
 
                         PlaySound("RequestSuccess");
 
@@ -231,7 +233,7 @@ namespace MonkePhone.Behaviours.Apps
                     }
                     else
                     {
-                        Logging.Error($"A photo was unable to be uploaded to the website: {webRequest.error}");
+                        Logging.Error($"A photo was unable to be uploaded to the webhook: {webRequest.error}");
                         Logging.Warning($"Server response: {webRequest.downloadHandler.text}");
 
                         PlaySound("RequestDenied");
@@ -243,7 +245,7 @@ namespace MonkePhone.Behaviours.Apps
                     }
                     break;
                 case Configuration.EUploadMethod.CustomServer:
-                    form.AddField("username", Constants.Name);
+                    form.AddField("username", $"MonkeGram - {GorillaComputer.instance.currentName}");
                     form.AddField("content", message);
                     form.AddBinaryData("file1", image, image_name, "image/png");
 

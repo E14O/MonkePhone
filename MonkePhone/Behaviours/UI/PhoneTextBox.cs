@@ -10,7 +10,7 @@ namespace MonkePhone.Behaviours.UI
         public Color Colour = Color.white;
 
         [Space]
-        public string PlaceholderText = "Click box to open keyboard";
+        public string PlaceholderText = "Will be added soon";
         public Color PlaceholderColour = new Color32(200, 200, 200, 255);
 
         [Space]

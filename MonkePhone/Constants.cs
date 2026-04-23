@@ -18,9 +18,9 @@ namespace MonkePhone
         public const string Name = "MonkePhone";
 
         /// <summary>
-        /// The version of the plugin (formatted into <see cref="System.Version"/>)
+        /// The version of the plugin
         /// </summary>
-        public const string Version = "1.0.8";
+        public const string Version = "1.0.9";
 
         // Assets
 
@@ -37,6 +37,8 @@ namespace MonkePhone
         public const float PhoneVisibilityDistance = 3f;
 
         public const float NetworkCooldown = 0.5f;
+
+        public const int NetworkWaitTime = 300;
 
         // Camera
 
@@ -84,6 +86,14 @@ namespace MonkePhone
         };
 
         public static readonly ObjectPosition RightHandWeird = new()
+        {
+            Position = new Vector3(0.0828f, 0.0813f, 0.04f),
+            Rotation = Quaternion.Euler(280f, 96f, 83f)
+        };
+
+        //Debug 
+
+        public static readonly ObjectPosition Debug = new()
         {
             Position = new Vector3(0.0828f, 0.0813f, 0.04f),
             Rotation = Quaternion.Euler(280f, 96f, 83f)

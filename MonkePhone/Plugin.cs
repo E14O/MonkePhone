@@ -25,10 +25,10 @@ namespace MonkePhone
         {
             try
             {
-                new GameObject("MonkePhone", typeof(NetworkHandler), typeof(PhoneManager));
+                new GameObject(Constants.Name, typeof(NetworkHandler), typeof(PhoneManager), typeof(DebugManager));
             }
             catch (Exception ex)
-            {
+            {   
                 Logging.Error($"Error when initializing MonkePhone: {ex}");
             }
         }

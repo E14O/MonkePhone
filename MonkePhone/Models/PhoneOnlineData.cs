@@ -32,12 +32,12 @@ namespace MonkePhone.Models
         public string fileName;
         public string fileDownloadUrl;
 
-        /*
         public string FilePath => Path.Combine(PhoneManager.Instance.MusicPath, fileName);
         public bool IsDownloaded => File.Exists(FilePath);
 
         [NonSerialized]
         public DownloadState currentState;
+       
 
         public async Task<DownloadState> Download()
         {
@@ -68,6 +68,5 @@ namespace MonkePhone.Models
             Downloaded,
             Failed
         }
-        */
     }
 }

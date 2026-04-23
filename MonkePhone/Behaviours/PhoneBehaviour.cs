@@ -24,7 +24,7 @@ namespace MonkePhone.Behaviours
 
         public void PlaySound(string soundId, float volume = 1f) => InvokeMethod("PlaySound", soundId, volume);
 
-        public void InvokeMethod(string methodName, params object[] parameters)
+        public static void InvokeMethod(string methodName, params object[] parameters)
         {
             MethodInfo method = AccessTools.Method(typeof(PhoneManager), methodName);
             method?.Invoke(PhoneManager.Instance, parameters);

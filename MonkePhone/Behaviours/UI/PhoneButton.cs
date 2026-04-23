@@ -53,11 +53,8 @@ namespace MonkePhone.Behaviours.UI
                     InvokeMethod(nameof(PhoneManager.TogglePower));
                     break;
 
-                case "HidePromo":
-                    PhoneManager.Instance.watchPromoObject.SetActive(false);
-                    DateTime date = DateTime.UtcNow;
-                    string key = $"IgnorePromo{date.Year}{date.Month}";
-                    PlayerPrefs.SetInt(key, 1);
+                case "Personal Action":
+                    PhoneLockScreen.SetActionButton();
                     break;
             }
         }

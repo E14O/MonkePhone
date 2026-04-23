@@ -13,6 +13,8 @@ namespace MonkePhone.Tools
 
         public static ConfigEntry<string> UploadKey;
 
+        public static ConfigEntry<string> AuthCode;
+
         public static ConfigEntry<string> UploadUrl;
 
         // Appearance //
@@ -34,6 +36,8 @@ namespace MonkePhone.Tools
         public static ConfigEntry<bool> AutoPowered;
 
         public static ConfigEntry<EInitialPhoneLocation> InitialPosition;
+
+        public static ConfigEntry<ActionButton> AButton;
 
         public static ConfigEntry<bool> HandSwapping;
 
@@ -76,7 +80,14 @@ namespace MonkePhone.Tools
                 "The authorization header used for a photo upload using a custom server. Please refrain from distributing your key to anyone, MonkePhone is not responsible for any breaches."
             );
 
-            WallpaperName = File.Bind
+            UploadKey = File.Bind
+            (
+                "External", "Auth Code",
+                string.Empty,
+                "The auth key will be how you connect your game with your discord account. Do NOT share this code with anyone. Abusing the code will lead to a account deactivation and ban."
+            );
+
+            AuthCode = File.Bind
             (
                 "Appearance",
                 "Wallpaper",
@@ -92,7 +103,7 @@ namespace MonkePhone.Tools
                 new ConfigDescription("The image resolution used by the phone cameras")
             );
 
-            CameraResolution.SettingChanged += (sender, e) =>
+            CameraResolution.SettingChanged += (object sender, System.EventArgs e) =>
             {
                 var resolution = CameraResolution.Value;
                 PhoneManager.Instance?.GetApp<MonkeGramApp>()?.AdjustCameraQuality((int)resolution);
@@ -105,6 +116,32 @@ namespace MonkePhone.Tools
                 1f,
                 new ConfigDescription("The volume for sound produced by the phone", new AcceptableValueRange<float>(0f, 1f))
             );
+
+            MusicMultiplier = File.Bind
+            (
+                "Auditory",
+                "Music Volume",
+                1f,
+                new ConfigDescription("The volume for music produced by the phone", new AcceptableValueRange<float>(0f, 1f))
+            );
+
+            MusicMultiplier.SettingChanged += (object sender, System.EventArgs e) =>
+            {
+                PhoneManager.Instance?.GetApp<MusicApp>()?.SetVolumeMultiplier(MusicMultiplier.Value);
+            };
+
+            UseSpatialBlend = File.Bind
+            (
+                "Auditory",
+                "Use Spatial Blend",
+                true,
+                new ConfigDescription("If music produced by the phone will be affected by spatialisation calculations")
+            );
+
+            UseSpatialBlend.SettingChanged += (object sender, System.EventArgs e) =>
+            {
+                PhoneManager.Instance?.GetApp<MusicApp>()?.SetSpatialBlend(UseSpatialBlend.Value);
+            };
 
             AutoPowered = File.Bind
             (
@@ -143,7 +180,15 @@ namespace MonkePhone.Tools
                 "Behaviour",
                 "Reveal Map",
                 true,
-                new ConfigDescription("whether the current map should be disclosed in posts")
+                new ConfigDescription("Whether the current map should be disclosed in posts")
+            );
+
+            AButton = File.Bind
+            (
+                "Behaviour",
+                "ActionButton",
+                ActionButton.CameraApp,
+                new ConfigDescription("This decides what the action button on the lock screen opens")
             );
 
             ObjectHaptics = File.Bind
@@ -183,7 +228,7 @@ namespace MonkePhone.Tools
         {
             [Description("The phone will be placed on the table in stump")]
             Table,
-            [Description("The phone will levitate in the centre of stump")]
+            [Description("The phone will levitate in the center of stump")]
             Levitate,
             [Description("The phone will be mounted to the waist of the player")]
             Waist
@@ -202,13 +247,24 @@ namespace MonkePhone.Tools
             [Description("2k 2^11")]
             Ultra = 2048,
             [Description("4k 2^12")]
-            Profesional = 4096
+            Professional = 4096
         }
 
         public enum EUploadMethod
         {
             Webhook,
             CustomServer
+        }
+
+        public enum ActionButton
+        {
+            CameraApp,
+            GalleryApp,
+            CreditsApp,
+            MessagingApp,
+            ConfigurationApp,
+            MusicApp,
+            ScoreboardApp
         }
     }
 }

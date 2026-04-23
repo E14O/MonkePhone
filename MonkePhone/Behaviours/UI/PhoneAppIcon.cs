@@ -31,7 +31,6 @@ namespace MonkePhone.Behaviours.UI
 
             InvokeMethod("OpenApp", appId);
         }
-
 #endif
     }
 }
