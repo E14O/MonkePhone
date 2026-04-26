@@ -53,20 +53,20 @@
         {
             "title": "Maniacs of Noise",
             "coverUrl": "",
-            "fileName": "Maniacs_of_Noise.mp3",
-            "fileDownloadUrl": "https://github.com/E14O/MonkePhone/blob/main/Music/Maniacs_of_Noise.mp3"
+            "fileName": "ManiacsOfNoise.mp3",
+            "fileDownloadUrl": "https://github.com/E14O/MonkePhone/blob/main/Music/ManiacsOfNoise.mp3"
         },
         {
             "title": "Cave Wave",
             "coverUrl": "",
             "fileName": "CaveWave.mp3",
-            "fileDownloadUrl": "https://github.com/E14O/MonkePhone/blob/main/Music/cave-wave-gorilla-tag-original-soundtrack.mp3"
+            "fileDownloadUrl": "https://github.com/E14O/MonkePhone/blob/main/Music/CaveWave.mp3"
         },
         {
             "title": "Monke Need To Swing",
             "coverUrl": "",
             "fileName": "MonkeNeedToSwing.mp3",
-            "fileDownloadUrl": "https://github.com/E14O/MonkePhone/blob/main/Music/monke-need-to-swing-gorilla-tag-original-soundtrack.mp3"
+            "fileDownloadUrl": "https://github.com/E14O/MonkePhone/blob/main/Music/MonkeNeedToSwing.mp3"
         }
     ]
   }
