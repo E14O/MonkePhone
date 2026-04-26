@@ -25,7 +25,7 @@ namespace MonkePhone.Behaviours.Apps
         public Image _galleryPhoto;
         public Text _galleryText, _gallerySelection, _galleryWarning;
         private GameObject _deleteButton, _uploadButton, _thumbnailButton;
-
+       
         public List<Photo> RelativePhotos = [];
 
         public override void Initialize()

@@ -26,7 +26,6 @@ namespace MonkePhone.Behaviours.Apps
 
         private readonly Dictionary<GameObject, int> _muteButtonIndex = new();
 
-
         private Text _roomIdText;
         private Text _roomNotice;
 

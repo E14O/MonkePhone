@@ -106,7 +106,6 @@ namespace MonkePhone.Behaviours.Apps
             }
         }
 
-
         private void JoinedRoomEvent() => RefreshApp();
 
         private void LeftRoomEvent() => RefreshApp();

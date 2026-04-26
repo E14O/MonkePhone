@@ -125,10 +125,7 @@ namespace MonkePhone.Behaviours
 
             _RandomFile = _Files[Random.Range(0, _Files.Length)];
         }
-        private void Phone(Transform phone, ObjectPosition position)
-        {
-            //TODO: Make gui toggle to move phone towards main camera
-        }
+        private void Phone(Transform phone, ObjectPosition position) { }
 
         private void Update()
         {

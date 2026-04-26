@@ -168,8 +168,8 @@ namespace MonkePhone.Behaviours
                             CreateApp<MessagingApp>(t.gameObject);
                             break;
 
-                        case "CreditsApp":
-                            CreateApp<CreditsApp>(t.gameObject);
+                        case "ContributionsApp":
+                            CreateApp<ContributionsApp>(t.gameObject);
                             break;
 
                         case "Top Bar":
