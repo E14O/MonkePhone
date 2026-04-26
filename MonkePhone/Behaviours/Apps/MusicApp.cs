@@ -30,7 +30,7 @@ namespace MonkePhone.Behaviours.Apps
         private PhoneSlider _timelineSlider;
 
         private Text _songTitle, _songMissing, _songTimePosition, _songLengthText;
-        public AudioSource _MusicSource;
+        public static AudioSource _MusicSource;
 
         private List<StreamableMusicComponent> _streamableMusicComponents = new();
 
