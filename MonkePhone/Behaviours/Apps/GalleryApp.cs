@@ -285,5 +285,7 @@ namespace MonkePhone.Behaviours.Apps
                     break;
             }
         }
+
+        public void Update() { }
     }
 }

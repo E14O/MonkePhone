@@ -37,7 +37,7 @@ namespace MonkePhone.Behaviours.Apps
                     _currentPage = 0;
                     RefreshApp();
                     break;
-                case "Nav Rigt":
+                case "Nav Right":
                     _currentPage = 1;
                     RefreshApp();
                     break;

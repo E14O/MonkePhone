@@ -113,5 +113,7 @@ namespace MonkePhone.Behaviours.Apps
         private void PlayerJoinedEvent(NetPlayer player) => RefreshApp();
 
         private void PlayerLeftEvent(NetPlayer player) => RefreshApp();
+
+        public void Update() { }
     }
 }

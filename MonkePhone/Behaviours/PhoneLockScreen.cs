@@ -55,7 +55,7 @@ namespace MonkePhone.Behaviours
                     break;
 
                 case ActionButton.CreditsApp:
-                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<CreditsApp>().AppId);
+                    PhoneManager.Instance.OpenApp(PhoneManager.Instance.GetApp<ContributionsApp>().AppId);
                     break;
 
                 case ActionButton.MusicApp:

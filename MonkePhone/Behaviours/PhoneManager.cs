@@ -304,9 +304,9 @@ namespace MonkePhone.Behaviours
 
         public void HandleMusicHaptics()
         {
-            if (Configuration.MusicHaptics.Value && GetApp<MusicApp>().MusicSource.isPlaying)
+            if (Configuration.MusicHaptics.Value && GetApp<MusicApp>()._MusicSource.isPlaying)
             {
-                float totalLoudness = Mathf.Clamp(GetApp<MusicApp>().MusicSource.GetLoudness(), 0, 30);
+                float totalLoudness = Mathf.Clamp(GetApp<MusicApp>()._MusicSource.GetLoudness(), 0, 30);
                 GorillaTagger.Instance.StartVibration(Phone.InLeftHand, totalLoudness / 8f / 30f, Time.deltaTime);
             }
         }

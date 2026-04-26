@@ -162,5 +162,7 @@ namespace MonkePhone.Behaviours.Apps
             _slider.transform.Find("Description").GetComponent<Text>().text = description != null ? description.Description : string.Empty;
             phoneUIObject.transform.localPosition = description != null ? new Vector3(12.9f, -31.9f, -0.2000008f) : new Vector3(12.9f, -26.5f, -0.2000008f);
         }
+
+        public void Update() { }
     }
 }

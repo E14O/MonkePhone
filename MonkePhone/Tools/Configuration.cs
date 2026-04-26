@@ -113,7 +113,7 @@ namespace MonkePhone.Tools
                 "Auditory",
                 "Music Volume",
                 1f,
-                new ConfigDescription("The volume for music produced by the phone", new AcceptableValueRange<float>(0f, 1f))
+                new ConfigDescription("The volume for music produced by the phone", new AcceptableValueRange<float>(0f, 10f))
             );
 
             MusicMultiplier.SettingChanged += (object sender, System.EventArgs e) =>
