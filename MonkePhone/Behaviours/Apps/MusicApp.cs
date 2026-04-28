@@ -56,8 +56,7 @@ namespace MonkePhone.Behaviours.Apps
         {
             if (_MusicSource && _MusicSource.clip != null)
             {
-                float _progress = _MusicSource.time / _MusicSource.clip.length;
-                _timelineSlider.Value = _progress;
+                _timelineSlider.Parameters = new Vector3(0f, _MusicSource.clip.length, _MusicSource.time);
                 _timelineSlider.UpdatePosition();
 
                 _songTimePosition.text = TimeSpan.FromSeconds(_MusicSource.time).ToString(@"mm\:ss");
@@ -327,11 +326,16 @@ namespace MonkePhone.Behaviours.Apps
                 _songTitle.text = Path.GetFileNameWithoutExtension(_musicList[_currentMusic]);
                 _timelineSlider.gameObject.SetActive(true);
 
-                if (_timelineSlider.Value != 0 && _MusicSource.clip != null && _MusicSource.clip.name != Path.GetFileNameWithoutExtension(_musicList[_currentMusic]))
+                if (_MusicSource.clip != null && _MusicSource.isPlaying)
                 {
-                    _timelineSlider.Value = 0;
+                    float _currentTime = _MusicSource.time;
+                    float _totalTime = _MusicSource.clip.length;
+
+                    _timelineSlider.Value = _currentTime / _totalTime;
                     _timelineSlider.UpdatePosition();
-                    _songTimePosition.text = "00:00";
+
+                    TimeSpan _timeSpan = TimeSpan.FromSeconds(_currentTime);
+                    _songTimePosition.text = _timeSpan.ToString(@"mm\:ss");
                 }
             }
             catch (Exception ex)

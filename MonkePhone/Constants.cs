@@ -32,7 +32,9 @@ namespace MonkePhone
 
         // Networking
 
-        public const string CustomProperty = "MonkePhone"; // monkephone 2025
+        public const string CustomProperty = "MonkePhone"; // dev-monkephone 
+
+        public const string OurCustomProperty = "MonkePhone+"; // our-monkephone 
 
         public const float PhoneVisibilityDistance = 3f;
 

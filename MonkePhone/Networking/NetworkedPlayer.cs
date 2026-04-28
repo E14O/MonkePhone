@@ -114,20 +114,13 @@ namespace MonkePhone.Networking
                     _ownerTimeOffset = _offsetMins;
                 }
 
-                if (properties.TryGetValue("Version", out object value))
+                if (properties.ContainsKey(Constants.OurCustomProperty))
                 {
-                    if (value.ToString() == "1.0.7")
-                    {
-                        // devs version so keep it on the camera app4
-                        _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
-                    }
-                    else if (value.ToString() == Constants.Version)
-                    {
-                        // our version enable custom networking
-                        _dummyPhoneManager.CloseDummyApps();
-                        ScreenNetworking(properties);
-                    }
+                    _dummyPhoneManager.CloseDummyApps();
+                    ScreenNetworking(properties);
                 }
+                else
+                    _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
 
                 ConfigurePhone();
             }
@@ -154,6 +147,9 @@ namespace MonkePhone.Networking
 
             _meshRenderer = Phone.transform.Find("Model").GetComponent<MeshRenderer>();
 
+            if (_meshRenderer != null)
+                _meshRenderer.material.color = Rig.playerColor;
+
             try
             {
                 _background = Phone.transform.Find("Canvas/MonkeGramApp/Background").GetComponent<RawImage>();
@@ -175,20 +171,13 @@ namespace MonkePhone.Networking
                     mainTexture = _renderTexture
                 };
 
-                if (properties.TryGetValue("Version", out object value))
+                if (properties.ContainsKey(Constants.OurCustomProperty))
                 {
-                    if (value.ToString() == "1.0.6")
-                    {
-                        // devs version so keep it on the camera app
-                        _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
-                    }
-                    else if (value.ToString() == Constants.Version)
-                    {
-                        // our version so enable custom networking
-                        _dummyPhoneManager.CloseDummyApps();
-                        ScreenNetworking(properties);
-                    }
+                    _dummyPhoneManager.CloseDummyApps();
+                    ScreenNetworking(properties);
                 }
+                else
+                    _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
             }
             catch (Exception ex)
             {
@@ -268,7 +257,6 @@ namespace MonkePhone.Networking
                 }
             }
 
-            // set there local time networked. (HOPEFULLY THIS WORKS)
             DateTime _theirLocalTime = DateTime.UtcNow.AddMinutes(_ownerTimeOffset);
             _lockScreenText.text = _theirLocalTime.ToString("hh:mm tt");
             _lockScreenDateText.text = _theirLocalTime.ToString("dddd, dd MMMM");

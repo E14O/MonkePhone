@@ -19,10 +19,7 @@ namespace MonkePhone.Networking
         private bool set_properties = false;
         private float properties_timer;
 
-        public void Awake()
-        {
-            Instance = this;
-        }
+        public void Awake() => Instance = this;
 
         public void Start()
         {
@@ -35,7 +32,7 @@ namespace MonkePhone.Networking
                 return;
             }
 
-            enabled = false; // either no netsys or not in a pun environment - i doubt fusion will ever come
+            enabled = false; 
         }
 
         public void FixedUpdate()
@@ -49,6 +46,10 @@ namespace MonkePhone.Networking
                     {
                         Constants.CustomProperty,
                         new Dictionary<string, object>(properties)
+                    },
+                    {
+                        Constants.OurCustomProperty,
+                        Constants.OurCustomProperty
                     }
                 });
 
@@ -98,68 +99,5 @@ namespace MonkePhone.Networking
                 OnPlayerPropertyChanged?.Invoke(netPlayer, properties);
             }
         }
-
-        /*
-        public async Task RegisterPlayer(NetPlayer player, VRRig rig)
-        {
-            Logging.Info($"RegisterPlayer {player.NickName}");
-
-            if (player.IsLocal) return;
-
-            var prtime_player = player.GetPlayerRef() ?? PhotonNetwork.CurrentRoom?.GetPlayer(player.ActorNumber);
-
-            if (!rig.GetComponent<NetPhone>())
-            {
-                NetPhone phone = rig.gameObject.GetOrAddComponent<NetPhone>();
-                phone.Player = prtime_player;
-                await Task.Delay(200);
-                PropertiesUpdate(player, prtime_player?.CustomProperties ?? []);
-            }
-        }
-
-        public void UnregisterPlayer(VRRig rig)
-        {
-            if (rig.TryGetComponent(out NetPhone phone) && !phone.Player.IsLocal)
-            {
-                Logging.Info($"UnregisterPlayer {phone.Player}");
-
-                Destroy(phone.Phone);
-                Destroy(phone);
-            }
-        }
-
-        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
-        {
-            base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
-
-            if (targetPlayer.IsLocal) return;
-
-            NetPlayer player = NetworkSystem.Instance.GetPlayer(targetPlayer.ActorNumber);
-            PropertiesUpdate(player, changedProps);
-        }
-
-        private void PropertiesUpdate(NetPlayer player, Hashtable changedProps)
-        {
-            try
-            {
-                if (player == null) return;
-
-                if (changedProps.TryGetValue(Constants.CustomProperty, out object value) && value is string str)
-                {
-                    PhoneNetworkContent content = str.FromJson<PhoneNetworkContent>();
-                    Logging.Info($"{player.NickName}: hand {content.IsHeld} lev {content.Levitate}");
-                    var rig = GorillaGameManager.StaticFindRigForPlayer(player);
-                    if (rig && rig.TryGetComponent(out NetPhone phone))
-                    {
-                        phone.UpdateNetworkContent(content);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logging.Error($"Error when handling updated properties for {player.NickName}: {ex}");
-            }
-        }
-        */
     }
 }

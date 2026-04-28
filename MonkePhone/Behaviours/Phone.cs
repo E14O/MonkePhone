@@ -58,6 +58,13 @@ namespace MonkePhone.Behaviours
 				return;
 			}
 
+			if (Configuration.InitialPosition.Value == Configuration.EInitialPhoneLocation.CStand)
+			{
+				transform.position = new Vector3(-68.4116f, 11.3765f, -81.3992f);
+				transform.eulerAngles = new Vector3(0f, 192.1316f, 343.2198f);
+				return;
+			}
+
 			InterpolationTime = 1f;
 			State = ObjectGrabbyState.Mounted;
 

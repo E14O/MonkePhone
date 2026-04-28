@@ -222,7 +222,9 @@ namespace MonkePhone.Tools
             [Description("The phone will levitate in the center of stump")]
             Levitate,
             [Description("The phone will be mounted to the waist of the player")]
-            Waist
+            Waist,
+            [Description("The phone will be placed up against the cosmetic stand in stump")]
+            CStand
         }
 
         public enum EPhoneResolution
