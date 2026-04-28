@@ -16,7 +16,17 @@ namespace MonkePhone.Extensions
                 GTZone.customMaps => "Virtual Stump",
                 GTZone.ghostReactor => "Ghost Reactor",
                 GTZone.hoverboard => "Hoverpark",
-                _ => Enum.GetName(typeof(GTZone), zone).ToTitleCase()
+                GTZone.ranked => "Ranked",
+                GTZone.tutorial => "Tutorial",
+                GTZone.canyon => "Canyon",
+                GTZone.cave => "Cave",
+                GTZone.beach => "Beach",
+                GTZone.basement => "Basement",
+                GTZone.Metropolis => "Metropolis",
+                GTZone.arcade => "Arcade",
+                GTZone.critters => "Critters",
+                GTZone.mountain => "Mountain",
+				_ => Enum.GetName(typeof(GTZone), zone).ToTitleCase()
             };
         }
     }
