@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GorillaLocomotion;
 using MonkePhone.Behaviours;
+using MonkePhone.Extensions;
 using MonkePhone.Interfaces;
 using MonkePhone.Models;
 using MonkePhone.Patches;
@@ -46,7 +47,7 @@ namespace MonkePhone.Networking
         public bool Flipped;
 
         public GameObject Phone, _MonkeGramApp;
-        private MeshRenderer _meshRenderer;
+        private MeshRenderer _phoneRenderer;
 
         // Camera
         private RenderTexture _renderTexture;
@@ -145,12 +146,9 @@ namespace MonkePhone.Networking
             Phone.SetActive(!Rig.IsInvisibleToLocalPlayer);
             Phone.transform.localEulerAngles = Vector3.zero;
 
-            _meshRenderer = Phone.transform.Find("Model").GetComponent<MeshRenderer>();
+			_phoneRenderer = Phone.transform.Find("Model").GetComponent<MeshRenderer>();
 
-            if (_meshRenderer != null)
-                _meshRenderer.material.color = Rig.playerColor;
-
-            try
+			try
             {
                 _background = Phone.transform.Find("Canvas/MonkeGramApp/Background").GetComponent<RawImage>();
 
@@ -179,11 +177,16 @@ namespace MonkePhone.Networking
                 else
                     _dummyPhoneManager.OpenDummyApp("MonkeGramApp");
             }
+
             catch (Exception ex)
             {
                 Logging.Error($"Error when attempting to prepare unique camera texture for {Rig.Creator.NickName}'s NetPhone: {ex}");
             }
-        }
+			if (_phoneRenderer != null)
+			{
+				_phoneRenderer.material.color = Rig.GetColor();
+			}
+		}
 
         public void ScreenNetworking(Dictionary<string, object> properties)
         {
@@ -231,7 +234,8 @@ namespace MonkePhone.Networking
             {
                 Logging.Error($"Error when updating network-content for camera of {Rig.Creator.NickName}: {ex}");
             }
-        }
+			
+		}
 
         public void FixedUpdate()
         {
@@ -249,14 +253,7 @@ namespace MonkePhone.Networking
                 _background.gameObject.SetActive(false);
             }
 
-            if (_meshRenderer != null)
-            {
-                if (_meshRenderer.material.color != Rig.playerColor)
-                {
-                    _meshRenderer.material.color = Rig.playerColor;
-                }
-            }
-
+           
             DateTime _theirLocalTime = DateTime.UtcNow.AddMinutes(_ownerTimeOffset);
             _lockScreenText.text = _theirLocalTime.ToString("hh:mm tt");
             _lockScreenDateText.text = _theirLocalTime.ToString("dddd, dd MMMM");
