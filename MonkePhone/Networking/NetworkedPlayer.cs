@@ -182,10 +182,7 @@ namespace MonkePhone.Networking
             {
                 Logging.Error($"Error when attempting to prepare unique camera texture for {Rig.Creator.NickName}'s NetPhone: {ex}");
             }
-			if (_phoneRenderer != null)
-			{
-				_phoneRenderer.material.color = Rig.GetColor();
-			}
+			
 		}
 
         public void ScreenNetworking(Dictionary<string, object> properties)
@@ -234,7 +231,11 @@ namespace MonkePhone.Networking
             {
                 Logging.Error($"Error when updating network-content for camera of {Rig.Creator.NickName}: {ex}");
             }
-			
+			if (_phoneRenderer != null)
+			{
+				_phoneRenderer.material.color = Rig.GetColor();
+			}
+
 		}
 
         public void FixedUpdate()
