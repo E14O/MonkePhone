@@ -54,10 +54,7 @@ namespace MonkePhone.Extensions
 			
 			return summaryAppendage == "" ? safetyCheckName : $"{safetyCheckName}{summaryAppendage}";
 		}
-		public static Color GetColor(this VRRig rig)
-		{
-			return rig.playerColor;
-		}
+	
 		public static bool IsTalking(NetPlayer player, VRRig rig)
 		{
 			if (player == null || rig == null) return false;

@@ -47,7 +47,7 @@ namespace MonkePhone.Networking
         public bool Flipped;
 
         public GameObject Phone, _MonkeGramApp;
-        private MeshRenderer _phoneRenderer;
+        private MeshRenderer _meshRenderer;
 
         // Camera
         private RenderTexture _renderTexture;
@@ -146,7 +146,8 @@ namespace MonkePhone.Networking
             Phone.SetActive(!Rig.IsInvisibleToLocalPlayer);
             Phone.transform.localEulerAngles = Vector3.zero;
 
-			_phoneRenderer = Phone.transform.Find("Model").GetComponent<MeshRenderer>();
+			_meshRenderer = Phone.transform.Find("Model").GetComponent<MeshRenderer>();
+			_meshRenderer.material = new Material(_meshRenderer.material);
 
 			try
             {
@@ -182,7 +183,8 @@ namespace MonkePhone.Networking
             {
                 Logging.Error($"Error when attempting to prepare unique camera texture for {Rig.Creator.NickName}'s NetPhone: {ex}");
             }
-			
+			OnColourChanged(Rig.playerColor);
+            Rig.OnColorChanged += OnColourChanged;
 		}
 
         public void ScreenNetworking(Dictionary<string, object> properties)
@@ -231,14 +233,15 @@ namespace MonkePhone.Networking
             {
                 Logging.Error($"Error when updating network-content for camera of {Rig.Creator.NickName}: {ex}");
             }
-			if (_phoneRenderer != null)
-			{
-				_phoneRenderer.material.color = Rig.GetColor();
-			}
+			
 
 		}
+		public void OnColourChanged(Color colour)
+		{
+			_meshRenderer.material.color = colour;
+		}
 
-        public void FixedUpdate()
+		public void FixedUpdate()
         {
             if (Phone is null)
                 return;
